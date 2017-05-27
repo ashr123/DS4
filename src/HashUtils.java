@@ -4,14 +4,14 @@ import java.util.ArrayList;
 //Changed!!!
 /// DO NOT CHANGE
 /// DO NOT SUBMIT
-public class HashUtils
+class HashUtils
 {
 	/**
 	 * Concatenates the given data and hashes it with SHA1
 	 * @param dataList an ArrayList of byte arrays (byte[]) containing the data to be concatenated and hashed.
 	 * @return 20 byte fixed-length hash value.
 	 */
-	public static byte[] sha1Hash(ArrayList<byte[]> dataList)
+	static byte[] sha1Hash(ArrayList<byte[]> dataList)
 	{
 		MessageDigest crypt=null;
 		try

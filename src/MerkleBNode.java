@@ -7,20 +7,20 @@ import java.util.Arrays;
  * Merkle-B-Tree node. <br>
  * Contains the signature of B-Node, and a childrenList of other MBT node.
  */
-public class MerkleBNode
+class MerkleBNode
 {
 	private byte[] hashValue;
 	private boolean isLeaf;
 	private ArrayList<MerkleBNode> childrenList;
 	
-	public MerkleBNode(byte[] hashValue, boolean isLeaf, ArrayList<MerkleBNode> childrenList)
+	MerkleBNode(byte[] hashValue, boolean isLeaf, ArrayList<MerkleBNode> childrenList)
 	{
 		this.hashValue=hashValue;
 		this.isLeaf=isLeaf;
 		this.childrenList=childrenList;
 	}
 	
-	public MerkleBNode(byte[] hashValue, ArrayList<MerkleBNode> childrenList)
+	MerkleBNode(byte[] hashValue, ArrayList<MerkleBNode> childrenList)
 	{
 		this(hashValue, false, childrenList);
 	}
@@ -28,17 +28,17 @@ public class MerkleBNode
 	/**
 	 * Constructs a MBT leaf node.
 	 */
-	public MerkleBNode(byte[] hashValue)
+	MerkleBNode(byte[] hashValue)
 	{
 		this(hashValue, true, new ArrayList<MerkleBNode>());
 	}
 	
-	public byte[] getHashValue()
+	byte[] getHashValue()
 	{
 		return hashValue;
 	}
 	
-	public boolean isLeaf()
+	boolean isLeaf()
 	{
 		return isLeaf;
 	}

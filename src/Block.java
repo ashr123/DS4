@@ -8,14 +8,14 @@ import java.util.Arrays;
 /**
  * A Block is a part of a larger file, to be stored in B-Tree nodes.
  */
-public class Block
+class Block
 {
-	public static int BLOCK_SIZE=200;
+	static int BLOCK_SIZE=200;
 	
 	private int key;
 	private byte[] data;
 	
-	public Block(int key, byte[] data)
+	Block(int key, byte[] data)
 	{
 		super();
 		this.key=key;
@@ -29,7 +29,7 @@ public class Block
 	 * @param toKey
 	 * @return ArrayList of blocks
 	 */
-	public static ArrayList<Block> blockFactory(int fromKey, int toKey)
+	static ArrayList<Block> blockFactory(int fromKey, int toKey)
 	{
 		SecureRandom random=new SecureRandom();
 		ArrayList<Block> blocks=new ArrayList<Block>(toKey-fromKey+1);
@@ -42,12 +42,12 @@ public class Block
 		return blocks;
 	}
 	
-	public int getKey()
+	int getKey()
 	{
 		return key;
 	}
 	
-	public byte[] getData()
+	byte[] getData()
 	{
 		return data;
 	}

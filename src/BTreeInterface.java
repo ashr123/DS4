@@ -1,6 +1,6 @@
 /// DO NOT CHANGE
 /// DO NOT SUBMIT
-public interface BTreeInterface
+interface BTreeInterface
 {
 	/**
 	 * @return the root BNode of the tree.

@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 //SUBMIT
-public class BNode implements BNodeInterface
+class BNode implements BNodeInterface
 {
 	// ///////////////////BEGIN DO NOT CHANGE ///////////////////
 	// ///////////////////BEGIN DO NOT CHANGE ///////////////////

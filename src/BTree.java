@@ -1,5 +1,5 @@
 // SUBMIT
-public class BTree implements BTreeInterface
+class BTree implements BTreeInterface
 {
 	private final int t;
 	// ///////////////////BEGIN DO NOT CHANGE ///////////////////

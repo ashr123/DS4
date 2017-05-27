@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 //DO NOT SUBMIT
-public class Tests
+class Tests
 {
 	private static boolean testLeafMerkleNodeAndLeafDelete()
 	{
