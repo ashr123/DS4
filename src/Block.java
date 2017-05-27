@@ -10,14 +10,13 @@ import java.util.Arrays;
  */
 class Block
 {
-	static int BLOCK_SIZE=200;
+	static final int BLOCK_SIZE=200;
 	
 	private int key;
 	private byte[] data;
 	
 	Block(int key, byte[] data)
 	{
-		super();
 		this.key=key;
 		this.data=data;
 	}
@@ -32,7 +31,7 @@ class Block
 	static ArrayList<Block> blockFactory(int fromKey, int toKey)
 	{
 		SecureRandom random=new SecureRandom();
-		ArrayList<Block> blocks=new ArrayList<Block>(toKey-fromKey+1);
+		ArrayList<Block> blocks=new ArrayList<>(toKey-fromKey+1);
 		for (int i=fromKey; i<=toKey; i++)
 		{
 			BigInteger bi=new BigInteger(BLOCK_SIZE*8, random);

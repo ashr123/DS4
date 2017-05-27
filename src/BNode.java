@@ -117,7 +117,6 @@ class BNode implements BNodeInterface
 		return childrenList.get(indx);
 	}
 	
-	
 	@Override
 	public int hashCode()
 	{
@@ -130,7 +129,6 @@ class BNode implements BNodeInterface
 		result=prime*result+t;
 		return result;
 	}
-	
 	
 	@Override
 	public boolean equals(Object obj)
