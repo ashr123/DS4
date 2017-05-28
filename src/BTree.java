@@ -72,22 +72,21 @@ class BTree implements BTreeInterface
 	@Override
 	public Block search(int key)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return root!=null ? root.search(key) : null;
 	}
 	
 	@Override
 	public void insert(Block b)
 	{
-		// TODO Auto-generated method stub
-		
+		if (root!=null && b!=null)
+			root.insertNonFull(b);
 	}
 	
 	@Override
 	public void delete(int key)
 	{
-		// TODO Auto-generated method stub
-		
+		if (root!=null)
+			root.delete(key);
 	}
 	
 	@Override
