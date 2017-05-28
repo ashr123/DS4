@@ -182,13 +182,14 @@ class BNode implements BNodeInterface
 		else if(isLeaf())
 			return null;
 		else
-			return search(key);
+			return getChildAt(i).search(key);
 	}
 	
 	@Override
 	public void insertNonFull(Block d)
 	{
 		// TODO Auto-generated method stub
+		
 		
 	}
 	
@@ -213,6 +214,16 @@ class BNode implements BNodeInterface
 	public void splitChild(int childIndex)
 	{
 		//TODO splitChild
+		BNode y = getChildAt(childIndex);
+		BNode z = new BNode(getT(),y.isLeaf(),getT()-1);
+		for (int i=0;i<getT()-1;i++)
+			z.moveBlockAt(i)=y.getBlockAt(i+t);
+		if (!y.isLeaf()){
+			for (int i=0;i<getT();i++)
+				z.moveChildAt(i)=y.getChildAt(i+t);
+		for (int i=getNumOfBlocks()+1;i>childIndex+1;i--)
+		
+		
 	}
 	
 	/**
