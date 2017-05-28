@@ -174,9 +174,15 @@ class BNode implements BNodeInterface
 	@Override
 	public Block search(int key)
 	{
-		// TODO Auto-generated method stub
-		
-		return null;
+		int i = 1;
+		while(i<=getNumOfBlocks() && key>getBlockKeyAt(i))
+			i++;
+		if(i<=getNumOfBlocks() && key==getBlockKeyAt(i))
+			return getBlockAt(i);
+		else if(isLeaf())
+			return null;
+		else
+			return search(key);
 	}
 	
 	@Override
