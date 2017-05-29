@@ -78,8 +78,16 @@ class BTree implements BTreeInterface
 	@Override
 	public void insert(Block b)
 	{
-		if (root!=null && b!=null)
-			root.insertNonFull(b);
+		if (b==null)
+			return;
+		if (getRoot().getNumOfBlocks()==2*getT()-1)//Line 2
+		{
+			root=new BNode(getT(), getRoot());//Lines 3-7
+			getRoot().splitChild(0);//Line 8
+			getRoot().insertNonFull(b);//Line 9
+		}
+		else//Line 10
+			getRoot().insertNonFull(b);//Line 11
 	}
 	
 	@Override

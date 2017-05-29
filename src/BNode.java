@@ -174,23 +174,45 @@ class BNode implements BNodeInterface
 	@Override
 	public Block search(int key)
 	{
-		int i = 1;
-		while(i<=getNumOfBlocks() && key>getBlockKeyAt(i))
-			i++;
-		if(i<=getNumOfBlocks() && key==getBlockKeyAt(i))
-			return getBlockAt(i);
-		else if(isLeaf())
-			return null;
+		int i=0;//Line 1
+		while (i<getNumOfBlocks() && key>getBlockKeyAt(i))//Line 2
+			i++;//Line 3
+		if (i<getNumOfBlocks() && key==getBlockKeyAt(i))//Line 4
+			return getBlockAt(i);//Line 5
 		else
-			return getChildAt(i).search(key);
+			if (isLeaf())//Line 6
+				return null;//Line 7
+			else//Line 8
+				return getChildAt(i).search(key);//Line 10
 	}
 	
 	@Override
 	public void insertNonFull(Block d)
 	{
-		// TODO Auto-generated method stub
-		
-		
+		int i=getNumOfBlocks()-1;//Line 1
+		if (isLeaf())//Line 2
+		{
+			while (i>=0 && d.getKey()<getBlockKeyAt(i))//Line 3
+			{
+				getBlocksList().set(i+1, getBlockAt(i));//Line 4
+				i--;//Line 5
+			}
+			getBlocksList().set(i+1, d);//Line 6
+			numOfBlocks++;//Line 7
+		}
+		else//Line 9
+		{
+			while (i>=0 && d.getKey()<getBlockKeyAt(i))//Line 10
+				i--;//Line 11
+			i++;//Line 12
+			if (getChildAt(i).getNumOfBlocks()==2*getT()-1)//Line 14
+			{
+				splitChild(i);//Line 15
+				if (d.getKey()>getBlockKeyAt(i))//Without a line num'
+					i++;//Line 16
+			}
+			getChildAt(i).insertNonFull(d);//Line 17
+		}
 	}
 	
 	@Override
@@ -209,25 +231,29 @@ class BNode implements BNodeInterface
 	
 	/**
 	 * Splits the child node at childIndex into 2 nodes.
-	 * @param childIndex
+	 * @param childIndex the child to be split
 	 */
 	public void splitChild(int childIndex)
 	{
-		//TODO splitChild
-		BNode y = getChildAt(childIndex);
-		BNode z = new BNode(getT(),y.isLeaf(),getT()-1);
-		for (int i=0;i<getT()-1;i++)
-			z.moveBlockAt(i)=y.getBlockAt(i+t);
-		if (!y.isLeaf()){
-			for (int i=0;i<getT();i++)
-				z.moveChildAt(i)=y.getChildAt(i+t);
-		for (int i=getNumOfBlocks()+1;i>childIndex+1;i--)
-		
-		
+		BNode y=getChildAt(childIndex);//Line 1
+		BNode z=new BNode(getT(), y.isLeaf(), getT()-1);//Lines 2-4
+		for (int i=0; i<getT()-1; i++)//Line 5
+			z.getBlocksList().set(i, y.getBlockAt(i+getT()));//Line 6
+		if (!y.isLeaf())//Line 7
+			for (int i=0; i<getT(); i++)//Line 8
+				z.getChildrenList().set(i, y.getChildAt(i+getT()));//Line 9
+		for (int i=getNumOfBlocks(); i>=childIndex+1; i--)//Line 10
+			getChildrenList().set(i+1, getChildrenList().get(i));//11
+		getChildrenList().set(childIndex+1, z);//Line 12
+		for (int i=getNumOfBlocks()-1; i>=childIndex; i++)//Line 13
+			getBlocksList().set(i+1, getBlocksList().get(i));//Line 14
+		getBlocksList().set(childIndex, y.getBlockAt(getT()));//Line 15
+		numOfBlocks++;//Line 16
+		y.numOfBlocks=getT()-1;//Line 17
 	}
 	
 	/**
-	 * True iff the child node at childIndx-1 exists and has more than t-1 blocks.
+	 * True iff the child node at {@code childIndx-1} exists and has more than t-1 blocks.
 	 * @param childIndx
 	 * @return
 	 */
