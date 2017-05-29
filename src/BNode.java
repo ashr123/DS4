@@ -208,7 +208,7 @@ class BNode implements BNodeInterface
 			if (getChildAt(i).getNumOfBlocks()==2*getT()-1)//Line 14
 			{
 				splitChild(i);//Line 15
-				if (d.getKey()>getBlockKeyAt(i))//Without a line num'
+				if (d.getKey()>getBlockKeyAt(i))//Without a line number
 					i++;//Line 16
 			}
 			getChildAt(i).insertNonFull(d);//Line 17
@@ -253,25 +253,21 @@ class BNode implements BNodeInterface
 	}
 	
 	/**
-	 * True iff the child node at {@code childIndx-1} exists and has more than t-1 blocks.
 	 * @param childIndx
-	 * @return
+	 * @return {@code true} iff the child node at {@code childIndx-1} exists and has more than {@code t-1} blocks.
 	 */
 	private boolean childHasNonMinimalLeftSibling(int childIndx)
 	{
-		//TODO childHasNonMinimalLeftSibling
-		return false;
+		return childIndx>=1 && getChildAt(childIndx-1)!=null && getChildAt(childIndx-1).getNumOfBlocks()>getT()-1;
 	}
 	
 	/**
-	 * True iff the child node at childIndx+1 exists and has more than t-1 blocks.
 	 * @param childIndx
-	 * @return
+	 * @return {@code true} iff the child node at {@code childIndx+1} exists and has more than {@code t-1} blocks.
 	 */
 	private boolean childHasNonMinimalRightSibling(int childIndx)
 	{
-		//TODO childHasNonMinimalRightSibling
-		return false;
+		return childIndx+1<=getNumOfBlocks() && getChildAt(childIndx+1)!=null && getChildAt(childIndx+1).getNumOfBlocks()>getT()-1;
 	}
 	
 	/**
@@ -337,8 +333,10 @@ class BNode implements BNodeInterface
 	 */
 	private Block getMinKeyBlock()
 	{
-		//TODO getMinKeyBlock
-		return null;
+		BNode i=this;
+		while (!i.isLeaf())
+			i=i.getChildAt(0);
+		return i.getBlockAt(0);
 	}
 	
 	/**
@@ -347,7 +345,9 @@ class BNode implements BNodeInterface
 	 */
 	private Block getMaxKeyBlock()
 	{
-		//TODO getMaxKeyBlock
-		return null;
+		BNode i=this;
+		while (!i.isLeaf())
+			i=i.getChildAt(getNumOfBlocks());
+		return i.getBlockAt(getNumOfBlocks()-1);
 	}
 }
