@@ -278,6 +278,17 @@ class BNode implements BNodeInterface
 	private void shiftOrMergeChildIfNeeded(int childIndx)
 	{
 		//TODO shiftOrMergeChildIfNeeded
+		if (childHasNonMinimalLeftSibling(childIndx))
+		{
+			shiftFromLeftSibling(childIndx);
+			return;
+		}
+		if (childHasNonMinimalRightSibling(childIndx))
+		{
+			shiftFromRightSibling(childIndx);
+			return;
+		}
+		mergeChildWithSibling(childIndx);
 	}
 	
 	/**
@@ -305,6 +316,12 @@ class BNode implements BNodeInterface
 	private void mergeChildWithSibling(int childIndx)
 	{
 		//TODO mergeChildWithSibling
+		if (childIndx>=1 && getChildAt(childIndx-1)!=null)
+		{
+			mergeWithLeftSibling(childIndx);
+			return;
+		}
+		mergeWithRightSibling(childIndx);
 	}
 	
 	/**
