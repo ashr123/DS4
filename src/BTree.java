@@ -72,7 +72,7 @@ class BTree implements BTreeInterface
 	@Override
 	public Block search(int key)
 	{
-		return root!=null ? root.search(key) : null;
+		return getRoot()!=null ? getRoot().search(key) : null;
 	}
 	
 	@Override
@@ -80,6 +80,11 @@ class BTree implements BTreeInterface
 	{
 		if (b==null)
 			return;
+		if (getRoot()==null)
+		{
+			root=new BNode(getT(), b);
+			return;
+		}
 		if (getRoot().getNumOfBlocks()==2*getT()-1)//Line 2
 		{
 			root=new BNode(getT(), getRoot());//Lines 3-7
