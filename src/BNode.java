@@ -218,7 +218,45 @@ class BNode implements BNodeInterface
 	@Override
 	public void delete(int key)
 	{
-		// TODO Auto-generated method stub
+		int i=0;
+		for (; i<getNumOfBlocks() && getBlockAt(i).getKey()<key; i++)
+			if (getBlockAt(i).getKey()==key)
+				if (isLeaf())//Case 1
+				{
+					getBlocksList().remove(i);
+					numOfBlocks--;
+					return;
+				}
+				else
+				{
+					if (getChildAt(i).getNumOfBlocks()>=getT())//Case 2
+					{
+						Block predecessor=getChildAt(i).getMaxKeyBlock();
+						getChildAt(i).delete(predecessor.getKey());
+						getBlocksList().set(i, predecessor);
+						return;
+					}
+					if (getChildAt(i).getNumOfBlocks()==getT()-1 && getChildAt(i+1)
+							                                                .getNumOfBlocks()>=getT())//Case 3
+					{
+						Block successor=getChildAt(i+1).getMinKeyBlock();
+						getChildAt(i+1).delete(successor.getKey());
+						getBlocksList().set(i, successor);
+						return;
+					}
+					if (getChildAt(i).getNumOfBlocks()==getT()-1 && getChildAt(i+1)
+							                                                .getNumOfBlocks()==getT()-1)//Case 4
+					{
+						mergeWithRightSibling(i);
+						getChildAt(i).delete(key);
+						return;
+					}
+				}
+		if (i<getNumOfBlocks())
+		{
+			shiftOrMergeChildIfNeeded(i);
+			getChildAt(i).delete(key);
+		}
 		
 	}
 	
@@ -226,6 +264,11 @@ class BNode implements BNodeInterface
 	public MerkleBNode createHashNode()
 	{
 		// TODO Auto-generated method stub
+		if (isLeaf())
+		{
+		}
+		byte[] hashValue =
+		MerkleBNode merkleBNode = new MerkleBNode()
 		return null;
 	}
 	
