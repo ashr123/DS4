@@ -1,4 +1,7 @@
+import com.sun.deploy.util.ArrayUtil;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 
 //SUBMIT
 class BNode implements BNodeInterface
@@ -266,6 +269,14 @@ class BNode implements BNodeInterface
 		// TODO Auto-generated method stub
 		if (isLeaf())
 		{
+			ArrayList<Byte[]> hashInput=new ArrayList<>();
+			for (Block block : blocksList)
+			{
+				hashInput.addAll(block.getData());
+			}
+			return new MerkleBNode(HashUtils.sha1Hash(,isLeaf(),)
+		}else {
+		
 		}
 		byte[] hashValue =
 		MerkleBNode merkleBNode = new MerkleBNode()
