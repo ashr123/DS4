@@ -159,17 +159,18 @@ class BNode implements BNodeInterface
 		return isLeaf==other.isLeaf && numOfBlocks==other.numOfBlocks && t==other.t;
 	}
 	
+	@SuppressWarnings("SingleCharacterStringConcatenation")
 	@Override
 	public String toString()
 	{
-		return "BNode [t="+t+", numOfBlocks="+numOfBlocks+", isLeaf="
-		       +isLeaf+", blocksList="+blocksList+", childrenList="
-		       +childrenList+"]";
+		return "BNode [t="+t+", numOfBlocks="+numOfBlocks+", isLeaf="+isLeaf+", blocksList="+blocksList
+		       +", childrenList="+childrenList+"]";
 	}
 	// ///////////////////DO NOT CHANGE END///////////////////
 	// ///////////////////DO NOT CHANGE END///////////////////
 	// ///////////////////DO NOT CHANGE END///////////////////
 	
+	@SuppressWarnings("TailRecursion")
 	@Override
 	public Block search(int key)
 	{
@@ -243,12 +244,14 @@ class BNode implements BNodeInterface
 			for (int i=0; i<getT(); i++)//Line 8
 //				z.getChildrenList().set(i, y.getChildAt(i+getT()));//Line 9
 				z.getChildrenList().add(y.getChildAt(i+getT()));//Line 9
-		for (int i=getNumOfBlocks(); i>=childIndex+1; i--)//Line 10
-			getChildrenList().set(i+1, getChildrenList().get(i));//11
-		getChildrenList().set(childIndex+1, z);//Line 12
-		for (int i=getNumOfBlocks()-1; i>=childIndex; i++)//Line 13
-			getBlocksList().set(i+1, getBlockAt(i));//Line 14
-		getBlocksList().set(childIndex, y.getBlockAt(getT()));//Line 15
+//		for (int i=getNumOfBlocks(); i>=childIndex+1; i--)//Line 10
+//			getChildrenList().set(i+1, getChildrenList().get(i));//Line 11
+//		getChildrenList().set(childIndex+1, z);//Line 12
+		getChildrenList().add(childIndex+1, z);//Lines 10-12
+//		for (int i=getNumOfBlocks()-1; i>=childIndex; i++)//Line 13
+//			getBlocksList().set(i+1, getBlockAt(i));//Line 14
+//		getBlocksList().set(childIndex, y.getBlockAt(getT()));//Line 15
+		getBlocksList().add(childIndex, y.getBlockAt(getT()));//Lines 13-15
 		numOfBlocks++;//Line 16
 		y.numOfBlocks=getT()-1;//Line 17
 	}
@@ -299,21 +302,19 @@ class BNode implements BNodeInterface
 	 */
 	private void shiftFromLeftSibling(int childIndx)
 	{
-		for (int i=getChildAt(childIndx).getNumOfBlocks()-1; i>=0; i--)
-			getChildAt(childIndx).getBlocksList().set(i+1, getChildAt(childIndx).getBlockAt(i));
-		
-		getChildAt(childIndx).getBlocksList().set(0, getBlockAt(getNumOfBlocks()-1));
+		getChildAt(childIndx).getBlocksList().add(0, getBlockAt(getNumOfBlocks()-1));
 		getChildAt(childIndx).numOfBlocks++;
 		
-		for (int i=getChildAt(childIndx).getNumOfBlocks()-1; i<=0; i--)
-			getChildAt(childIndx).getChildrenList().set(i+1, getChildAt(i));
-		
-		getChildAt(childIndx).getChildrenList().set(0, getChildAt(childIndx-1)
+		getChildAt(childIndx).getChildrenList().add(0, getChildAt(childIndx-1)
 				                                               .getChildAt(getChildAt(childIndx-1)
 						                                                           .getNumOfBlocks()));
+//		getChildAt(childIndx-1).getChildrenList().remove(getChildAt(childIndx-1).getNumOfBlocks());
+		
 		getBlocksList().set(getNumOfBlocks()-1, getChildAt(childIndx-1)
 				                                        .getBlockAt(getChildAt(childIndx-1)
 						                                                    .getNumOfBlocks()-1));
+//		getChildAt(childIndx-1).getBlocksList().remove(getChildAt(childIndx-1).getNumOfBlocks()-1);
+		
 		getChildAt(childIndx-1).numOfBlocks--;
 	}
 	
@@ -323,21 +324,15 @@ class BNode implements BNodeInterface
 	 */
 	private void shiftFromRightSibling(int childIndx)
 	{
-		for (int i=getChildAt(childIndx).getNumOfBlocks()-1; i>=0; i--)
-			getChildAt(childIndx).getBlocksList().set(i+1, getChildAt(childIndx).getBlockAt(i));
-		
-		getChildAt(childIndx).getBlocksList().set(0, getBlockAt(getNumOfBlocks()-1));
+		getChildAt(childIndx).getBlocksList().add(getBlockAt(getNumOfBlocks()-1));
 		getChildAt(childIndx).numOfBlocks++;
 		
-		for (int i=getChildAt(childIndx).getNumOfBlocks()-1; i<=0; i--)
-			getChildAt(childIndx).getChildrenList().set(i+1, getChildAt(i));
+		getChildAt(childIndx).getChildrenList().add(getChildAt(childIndx+1).getChildAt(0));
+		getChildAt(childIndx+1).getChildrenList().remove(0);
 		
-		getChildAt(childIndx).getChildrenList().set(0, getChildAt(childIndx+1)
-				                                               .getChildAt(getChildAt(childIndx+1)
-						                                                           .getNumOfBlocks()));
-		getBlocksList().set(getNumOfBlocks()-1, getChildAt(childIndx+1)
-				                                        .getBlockAt(getChildAt(childIndx+1)
-						                                                    .getNumOfBlocks()-1));
+		getBlocksList().set(getNumOfBlocks()-1, getChildAt(childIndx+1).getBlockAt(0));
+		getChildAt(childIndx+1).getBlocksList().remove(0);
+		
 		getChildAt(childIndx+1).numOfBlocks--;
 	}
 	
@@ -348,11 +343,9 @@ class BNode implements BNodeInterface
 	private void mergeChildWithSibling(int childIndx)
 	{
 		if (childIndx>=1 && getChildAt(childIndx-1)!=null)
-		{
 			mergeWithLeftSibling(childIndx);
-			return;
-		}
-		mergeWithRightSibling(childIndx);
+		else
+			mergeWithRightSibling(childIndx);
 	}
 	
 	/**
@@ -362,7 +355,24 @@ class BNode implements BNodeInterface
 	 */
 	private void mergeWithLeftSibling(int childIndx)
 	{
-		//TODO mergeWithLeftSibling
+		getChildAt(childIndx-1).getBlocksList().add(getBlockAt(childIndx-1));
+		
+		//Adds to the childIndxth-1 child the blocks of the childIndxth child
+		getChildAt(childIndx-1).getBlocksList().addAll(getChildAt(childIndx).getBlocksList());
+		getChildAt(childIndx-1).numOfBlocks+=getChildAt(childIndx).getNumOfBlocks()+1;
+		
+		//Adds to the childIndxth-1 child the childes of the childIndxth child
+		if (!getChildAt(childIndx).isLeaf())
+		{
+			if (getChildAt(childIndx-1).isLeaf())
+				getChildAt(childIndx-1).isLeaf=false;
+			getChildAt(childIndx-1).getChildrenList().addAll(getChildAt(childIndx).getChildrenList());
+		}
+		
+		//Deletes the childIndx-1 block
+		getBlocksList().remove(childIndx-1);
+		getBlocksList().remove(childIndx);
+		numOfBlocks--;
 	}
 	
 	/**
@@ -372,7 +382,25 @@ class BNode implements BNodeInterface
 	 */
 	private void mergeWithRightSibling(int childIndx)
 	{
-		//TODO mergeWithRightSibling
+		getChildAt(childIndx+1).getBlocksList().add(0, getBlockAt(childIndx));
+		
+		//Adds to the childIndxth+1 child the blocks of the childIndxth child
+		getChildAt(childIndx+1).getBlocksList().addAll(0, getChildAt(childIndx).getBlocksList());
+		getChildAt(childIndx+1).numOfBlocks+=getChildAt(childIndx).getNumOfBlocks()+1;
+		
+		//Adds to the childIndxth+1 child the childes of the childIndxth child
+		if (!getChildAt(childIndx).isLeaf())
+		{
+			if (getChildAt(childIndx+1).isLeaf())
+				getChildAt(childIndx+1).isLeaf=false;
+			getChildAt(childIndx+1).getChildrenList().addAll(0, getChildAt(childIndx)
+					                                                    .getChildrenList());
+		}
+		
+		//Deletes the childIndx block
+		getBlocksList().remove(childIndx);
+		getBlocksList().remove(childIndx);
+		numOfBlocks--;
 	}
 	
 	/**
