@@ -16,7 +16,7 @@ class BNode implements BNodeInterface
 	 * Constructor for creating a node with a single child.<br>
 	 * Useful for creating a new root.
 	 */
-	public BNode(int t, BNode firstChild)
+	BNode(int t, BNode firstChild)
 	{
 		this(t, false, 0);
 		childrenList.add(firstChild);
@@ -25,7 +25,7 @@ class BNode implements BNodeInterface
 	/**
 	 * Constructor for creating a <b>leaf</b> node with a single block.
 	 */
-	public BNode(int t, Block firstBlock)
+	BNode(int t, Block firstBlock)
 	{
 		this(t, true, 1);
 		blocksList.add(firstBlock);
@@ -194,10 +194,16 @@ class BNode implements BNodeInterface
 		{
 			while (i>=0 && d.getKey()<getBlockKeyAt(i))//Line 3
 			{
-				getBlocksList().set(i+1, getBlockAt(i));//Line 4
+				if (i==getNumOfBlocks()-1)
+					getBlocksList().add(getBlockAt(getNumOfBlocks()-1));
+				else
+					getBlocksList().set(i+1, getBlockAt(i));//Line 4
 				i--;//Line 5
 			}
-			getBlocksList().set(i/*+1*/, d);//Line 6
+			if (i==getNumOfBlocks()-1)
+				getBlocksList().add(i+1, d);//Line 6
+			else
+				getBlocksList().set(i+1, d);//Line 6
 			numOfBlocks++;//Line 7
 		}
 		else//Line 9
@@ -219,7 +225,7 @@ class BNode implements BNodeInterface
 	public void delete(int key)
 	{
 		int i=0;
-		for (; i<getNumOfBlocks() && getBlockAt(i).getKey()<key; i++)
+		for (; i<getNumOfBlocks() && getBlockAt(i).getKey()<=key; i++)
 			if (getBlockAt(i).getKey()==key)
 				if (isLeaf())//Case 1
 				{
@@ -290,7 +296,7 @@ class BNode implements BNodeInterface
 	 * Splits the child node at childIndex into 2 nodes.
 	 * @param childIndex the child to be split
 	 */
-	public void splitChild(int childIndex)
+	void splitChild(int childIndex)
 	{
 		BNode y=getChildAt(childIndex);//Line 1
 		BNode z=new BNode(getT(), y.isLeaf(), getT()-1);//Lines 2-4
@@ -483,9 +489,4 @@ class BNode implements BNodeInterface
 			i=i.getChildAt(getNumOfBlocks());
 		return i.getBlockAt(getNumOfBlocks()-1);
 	}
-	
-//	void setNumOfBlocks(int numOfBlocks)
-//	{
-//		this.numOfBlocks=numOfBlocks;
-//	}
 }

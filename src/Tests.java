@@ -3,7 +3,7 @@ import java.util.ArrayList;
 //DO NOT SUBMIT
 class Tests
 {
-	private static boolean testLeafMerkleNodeAndLeafDelete()
+	private static void testLeafMerkleNodeAndLeafDelete()
 	{
 		MerkleBNode mbt, mbtExpected;
 		try
@@ -29,16 +29,14 @@ class Tests
 			if (!mbt.equals(mbtExpected))
 			{
 				System.out.println("Test: testLeafMerkleNode Failed");
-				return false;
+				return;
 			}
 			System.out.println("Test: testLeafMerkleNode Passed");
-			return true;
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.out.println("Test: testLeafMerkleNode Failed");
-			return false;
 		}
 	}
 	
