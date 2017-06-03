@@ -1,7 +1,4 @@
-import com.sun.deploy.util.ArrayUtil;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 
 //SUBMIT
 class BNode implements BNodeInterface
@@ -200,7 +197,7 @@ class BNode implements BNodeInterface
 				getBlocksList().set(i+1, getBlockAt(i));//Line 4
 				i--;//Line 5
 			}
-			getBlocksList().set(i+1, d);//Line 6
+			getBlocksList().set(i/*+1*/, d);//Line 6
 			numOfBlocks++;//Line 7
 		}
 		else//Line 9
@@ -266,7 +263,6 @@ class BNode implements BNodeInterface
 	@Override
 	public MerkleBNode createHashNode()
 	{
-		// TODO Auto-generated method stub
 		ArrayList<byte[]> hashInput;
 		if (isLeaf())
 		{
