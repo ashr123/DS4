@@ -105,7 +105,8 @@ class BTree implements BTreeInterface
 	@Override
 	public MerkleBNode createMBT()
 	{
-		// TODO Auto-generated method stub
+		if(root!=null)
+			return root.createHashNode();
 		return null;
 	}
 }
