@@ -99,7 +99,35 @@ class BTree implements BTreeInterface
 	public void delete(int key)
 	{
 		if (root!=null)
+		{
+//			if (getRoot().getNumOfBlocks()==1 && !getRoot().isLeaf())
+//				if (getRoot().childHasNonMinimalRightSibling(0))
+//				{
+//					getRoot().mergeWithRightSibling(0);
+//					root=getRoot().getChildAt(1);
+//				}
+//				else
+//				{
+//					getRoot().mergeWithRightSibling(0);
+//					root=getRoot().getChildAt(0);
+//				}
 			root.delete(key);
+//			if (getRoot().getNumOfBlocks()==0)
+//				return;
+//			int last=getRoot().getBlockKeyAt(getRoot().getNumOfBlocks()-1);
+//			if (getRoot().getNumOfBlocks()>=2*getT()-1)
+//			{
+//				Block block=getRoot().getBlockAt(getRoot().getNumOfBlocks()-1);
+//				root=new BNode(getT(), getRoot());
+//				getRoot().splitChild(0);
+//				if (key!=last && getRoot().getChildAt(1).getBlockKeyAt(getRoot().getChildAt(1).getNumOfBlocks()-1)!=last)
+//				{
+//					getRoot().getChildAt(1).getBlocksList().add(block);
+//					getRoot().getChildAt(1).setNumOfBlocks(getRoot().getChildAt(1)
+//					                                                .getNumOfBlocks()+1);
+//				}
+//			}
+		}
 	}
 	
 	@Override
