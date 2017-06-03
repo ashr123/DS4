@@ -267,20 +267,27 @@ class BNode implements BNodeInterface
 	public MerkleBNode createHashNode()
 	{
 		// TODO Auto-generated method stub
+		ArrayList<byte[]> hashInput;
 		if (isLeaf())
 		{
-			ArrayList<Byte[]> hashInput=new ArrayList<>();
+			hashInput=new ArrayList<>(getNumOfBlocks());
 			for (Block block : blocksList)
-			{
-				hashInput.addAll(block.getData());
-			}
-			return new MerkleBNode(HashUtils.sha1Hash(,isLeaf(),)
-		}else {
-		
+				hashInput.add(block.getData());
+			return new MerkleBNode(HashUtils.sha1Hash(hashInput));
 		}
-		byte[] hashValue =
-		MerkleBNode merkleBNode = new MerkleBNode()
-		return null;
+		
+		hashInput=new ArrayList<>(getNumOfBlocks()*2+1);
+		ArrayList<MerkleBNode> merkleChildrenList=new ArrayList<>(getNumOfBlocks());
+		for (BNode child : getChildrenList())//Builds array of Merkle children by in-order scanning
+			merkleChildrenList.add(child.createHashNode());
+		for (int i=0; i<getNumOfBlocks(); i++)
+		{
+			hashInput.add(merkleChildrenList.get(i).getHashValue());
+			hashInput.add(getBlockAt(i).getData());
+		}
+		hashInput.add(merkleChildrenList.get(getNumOfBlocks()).getHashValue());
+		
+		return new MerkleBNode(HashUtils.sha1Hash(hashInput), merkleChildrenList);
 	}
 	
 	/**
