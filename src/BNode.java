@@ -41,8 +41,8 @@ class BNode implements BNodeInterface
 	}
 	
 	// For testing purposes.
-	public BNode(int t, int numOfBlocks, boolean isLeaf,
-	             ArrayList<Block> blocksList, ArrayList<BNode> childrenList)
+	public BNode(int t, int numOfBlocks, boolean isLeaf, ArrayList<Block> blocksList,
+	             ArrayList<BNode> childrenList)
 	{
 		this.t=t;
 		this.numOfBlocks=numOfBlocks;
@@ -195,7 +195,7 @@ class BNode implements BNodeInterface
 			while (i>=0 && d.getKey()<getBlockKeyAt(i))//Line 3
 			{
 				if (i==getNumOfBlocks()-1)
-					getBlocksList().add(getBlockAt(getNumOfBlocks()-1));
+					getBlocksList().add(getBlockAt(getNumOfBlocks()-1));//Line 4
 				else
 					getBlocksList().set(i+1, getBlockAt(i));//Line 4
 				i--;//Line 5
@@ -258,14 +258,8 @@ class BNode implements BNodeInterface
 						return;
 					}
 				}
-		if (/*i<=getNumOfBlocks() && */!isLeaf())
-		{
-			boolean isMerged=getChildAt(i).getNumOfBlocks()<getT() && !childHasNonMinimalLeftSibling(i) &&
-			                 !childHasNonMinimalRightSibling(i) && i!=0;
-			shiftOrMergeChildIfNeeded(i);
-			getChildAt(isMerged ? i-1 : i).delete(key);
-		}
-		
+		if (!isLeaf())
+			getChildAt(shiftOrMergeChildIfNeeded(i) && i!=0 ? i-1 : i).delete(key);
 	}
 	
 	@Override
@@ -316,17 +310,17 @@ class BNode implements BNodeInterface
 	}
 	
 	/**
-	 * @param childIndx
+	 * @param childIndx the child to be checked
 	 * @return {@code true} iff the child node at {@code childIndx-1} exists and has more than {@code t-1} blocks.
 	 */
-	boolean childHasNonMinimalLeftSibling(int childIndx)
+	private boolean childHasNonMinimalLeftSibling(int childIndx)
 	{
 		return childIndx>=1 && !isLeaf() && getChildAt(childIndx-1)!=null && getChildAt(childIndx-1)
 				                                                        .getNumOfBlocks()>getT()-1;
 	}
 	
 	/**
-	 * @param childIndx
+	 * @param childIndx the child to be checked
 	 * @return {@code true} iff the child node at {@code childIndx+1} exists and has more than {@code t-1} blocks.
 	 */
 	boolean childHasNonMinimalRightSibling(int childIndx)
@@ -336,31 +330,33 @@ class BNode implements BNodeInterface
 	}
 	
 	/**
-	 * Verifies the child node at childIndx has at least t blocks.<br>
+	 * Verifies the child node at {@code childIndx} has at least {@code t} blocks.<br>
 	 * If necessary a shift or merge is performed.
-	 * @param childIndx
+	 * @param childIndx the child to be shifted or merged to, if needed
 	 */
-	private void shiftOrMergeChildIfNeeded(int childIndx)
+	private boolean shiftOrMergeChildIfNeeded(int childIndx)
 	{
 		if (getChildAt(childIndx).getNumOfBlocks()<getT())
 		{
 			if (childHasNonMinimalLeftSibling(childIndx))
 			{
 				shiftFromLeftSibling(childIndx);
-				return;
+				return false;
 			}
 			if (childHasNonMinimalRightSibling(childIndx))
 			{
 				shiftFromRightSibling(childIndx);
-				return;
+				return false;
 			}
 			mergeChildWithSibling(childIndx);
+			return true;
 		}
+		return false;
 	}
 	
 	/**
-	 * Add additional block to the child node at childIndx, by shifting from left sibling.
-	 * @param childIndx
+	 * Add additional block to the child node at {@code childIndx}, by shifting from left sibling.
+	 * @param childIndx the index to be shifted to from left sibling
 	 */
 	private void shiftFromLeftSibling(int childIndx)
 	{
@@ -385,8 +381,8 @@ class BNode implements BNodeInterface
 	}
 	
 	/**
-	 * Add additional block to the child node at childIndx, by shifting from right sibling.
-	 * @param childIndx
+	 * Add additional block to the child node at {@code childIndx}, by shifting from right sibling.
+	 * @param childIndx the index to be shifted to from right sibling
 	 */
 	private void shiftFromRightSibling(int childIndx)
 	{
@@ -405,8 +401,8 @@ class BNode implements BNodeInterface
 	}
 	
 	/**
-	 * Merges the child node at childIndx with its left or right sibling.
-	 * @param childIndx
+	 * Merges the child node at {@code childIndx} with its left or right sibling.
+	 * @param childIndx the index to be merged with
 	 */
 	private void mergeChildWithSibling(int childIndx)
 	{
@@ -417,9 +413,9 @@ class BNode implements BNodeInterface
 	}
 	
 	/**
-	 * Merges the child node at childIndx with its left sibling.<br>
+	 * Merges the child node at {@code childIndx} with its left sibling.<br>
 	 * The left sibling node is removed.
-	 * @param childIndx
+	 * @param childIndx the index to be merged with
 	 */
 	private void mergeWithLeftSibling(int childIndx)
 	{
@@ -444,9 +440,9 @@ class BNode implements BNodeInterface
 	}
 	
 	/**
-	 * Merges the child node at childIndx with its right sibling.<br>
+	 * Merges the child node at {@code childIndx} with its right sibling.<br>
 	 * The right sibling node is removed.
-	 * @param childIndx
+	 * @param childIndx the index to be merged with
 	 */
 	void mergeWithRightSibling(int childIndx)
 	{
@@ -495,10 +491,5 @@ class BNode implements BNodeInterface
 		while (!i.isLeaf())
 			i=i.getChildAt(i.getNumOfBlocks());
 		return i.getBlockAt(i.getNumOfBlocks()-1);
-	}
-	
-	public void setNumOfBlocks(int numOfBlocks)
-	{
-		this.numOfBlocks=numOfBlocks;
 	}
 }
