@@ -260,9 +260,10 @@ class BNode implements BNodeInterface
 				}
 		if (/*i<=getNumOfBlocks() && */!isLeaf())
 		{
-			boolean isNotMerged=!((getChildAt(i).getNumOfBlocks()<getT())&&(childHasNonMinimalLeftSibling(i) || childHasNonMinimalRightSibling(i)));
+			boolean isMerged=getChildAt(i).getNumOfBlocks()<getT() && !childHasNonMinimalLeftSibling(i) &&
+			                 !childHasNonMinimalRightSibling(i) && i!=0;
 			shiftOrMergeChildIfNeeded(i);
-			getChildAt(isNotMerged ? i : i-1).delete(key);
+			getChildAt(isMerged ? i-1 : i).delete(key);
 		}
 		
 	}
@@ -305,9 +306,13 @@ class BNode implements BNodeInterface
 //			z.getBlocksList().set(i, y.getBlockAt(i+getT()));//Line 6
 			z.getBlocksList().add(y.getBlockAt(i+getT()));//Line 6
 		if (!y.isLeaf())//Line 7
+		{
 			for (int i=0; i<getT(); i++)//Line 8
 //				z.getChildrenList().set(i, y.getChildAt(i+getT()));//Line 9
-				z.getChildrenList().add(y.getChildAt(i+getT()));//Line 9
+				//z.getChildrenList().add(y.getChildAt(i+getT()));//Line 9
+				z.getChildrenList().add(y.getChildrenList().remove(getT()));//Line 9
+			
+		}
 //		for (int i=getNumOfBlocks(); i>=childIndex+1; i--)//Line 10
 //			getChildrenList().set(i+1, getChildrenList().get(i));//Line 11
 //		getChildrenList().set(childIndex+1, z);//Line 12
@@ -371,7 +376,7 @@ class BNode implements BNodeInterface
 	 */
 	private void shiftFromLeftSibling(int childIndx)
 	{
-		getChildAt(childIndx).getBlocksList().add(0, getBlockAt(childIndx));
+		getChildAt(childIndx).getBlocksList().add(0, getBlockAt(childIndx-1));
 		getChildAt(childIndx).numOfBlocks++;
 		
 		if (!getChildAt(childIndx-1).isLeaf())
@@ -383,7 +388,7 @@ class BNode implements BNodeInterface
 					                                                 .getNumOfBlocks());
 		}
 		
-		getBlocksList().set(childIndx, getChildAt(childIndx-1).getBlockAt(getChildAt(childIndx-1)
+		getBlocksList().set(childIndx-1, getChildAt(childIndx-1).getBlockAt(getChildAt(childIndx-1)
 				                                                                  .getNumOfBlocks()-1));
 		getChildAt(childIndx-1).getBlocksList().remove(getChildAt(childIndx-1).getNumOfBlocks()-1);
 		
@@ -500,7 +505,7 @@ class BNode implements BNodeInterface
 		BNode i=this;
 		while (!i.isLeaf())
 			i=i.getChildAt(getNumOfBlocks());
-		return i.getBlockAt(getNumOfBlocks()-1);
+		return i.getBlockAt(i.getNumOfBlocks()-1);
 	}
 	
 	public void setNumOfBlocks(int numOfBlocks)

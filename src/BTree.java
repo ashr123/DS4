@@ -106,7 +106,7 @@ class BTree implements BTreeInterface
 				if (getRoot().childHasNonMinimalRightSibling(0))
 				{
 					getRoot().mergeWithRightSibling(0);
-					root=getRoot().getChildAt(1);
+					root=getRoot().getChildAt(0);
 				}
 				else
 				{
