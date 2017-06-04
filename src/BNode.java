@@ -323,7 +323,7 @@ class BNode implements BNodeInterface
 	 * @param childIndx the child to be checked
 	 * @return {@code true} iff the child node at {@code childIndx+1} exists and has more than {@code t-1} blocks.
 	 */
-	boolean childHasNonMinimalRightSibling(int childIndx)
+	private boolean childHasNonMinimalRightSibling(int childIndx)
 	{
 		return childIndx+1<=getNumOfBlocks() && !isLeaf() && getChildAt(childIndx+1)!=null &&
 		       getChildAt(childIndx+1).getNumOfBlocks()>getT()-1;
