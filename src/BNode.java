@@ -303,23 +303,11 @@ class BNode implements BNodeInterface
 		BNode y=getChildAt(childIndex);//Line 1
 		BNode z=new BNode(getT(), y.isLeaf(), getT()-1);//Lines 2-4
 		for (int i=0; i<getT()-1; i++)//Line 5
-//			z.getBlocksList().set(i, y.getBlockAt(i+getT()));//Line 6
 			z.getBlocksList().add(y.getBlockAt(i+getT()));//Line 6
 		if (!y.isLeaf())//Line 7
-		{
 			for (int i=0; i<getT(); i++)//Line 8
-//				z.getChildrenList().set(i, y.getChildAt(i+getT()));//Line 9
-				//z.getChildrenList().add(y.getChildAt(i+getT()));//Line 9
 				z.getChildrenList().add(y.getChildrenList().remove(getT()));//Line 9
-			
-		}
-//		for (int i=getNumOfBlocks(); i>=childIndex+1; i--)//Line 10
-//			getChildrenList().set(i+1, getChildrenList().get(i));//Line 11
-//		getChildrenList().set(childIndex+1, z);//Line 12
 		getChildrenList().add(childIndex+1, z);//Lines 10-12
-//		for (int i=getNumOfBlocks()-1; i>=childIndex; i++)//Line 13
-//			getBlocksList().set(i+1, getBlockAt(i));//Line 14
-//		getBlocksList().set(childIndex, y.getBlockAt(getT()));//Line 15
 		getBlocksList().add(childIndex, y.getBlockAt(getT()-1));//Lines 13-15
 		for (int i=getT()-1; i<y.getNumOfBlocks(); i++)
 			y.getBlocksList().remove(getT()-1);
@@ -383,13 +371,14 @@ class BNode implements BNodeInterface
 		{
 			getChildAt(childIndx).getChildrenList().add(0, getChildAt(childIndx-1)
 					                                            .getChildAt(getChildAt(childIndx-1)
-							                                                           .getNumOfBlocks()-1));
+							                                                           .getNumOfBlocks()));
 			getChildAt(childIndx-1).getChildrenList().remove(getChildAt(childIndx-1)
 					                                                 .getNumOfBlocks());
 		}
 		
-		getBlocksList().set(childIndx-1, getChildAt(childIndx-1).getBlockAt(getChildAt(childIndx-1)
-				                                                                  .getNumOfBlocks()-1));
+		getBlocksList().set(childIndx-1, getChildAt(childIndx-1)
+				                                 .getBlockAt(getChildAt(childIndx-1)
+						                                             .getNumOfBlocks()-1));
 		getChildAt(childIndx-1).getBlocksList().remove(getChildAt(childIndx-1).getNumOfBlocks()-1);
 		
 		getChildAt(childIndx-1).numOfBlocks--;
@@ -504,7 +493,7 @@ class BNode implements BNodeInterface
 	{
 		BNode i=this;
 		while (!i.isLeaf())
-			i=i.getChildAt(getNumOfBlocks());
+			i=i.getChildAt(i.getNumOfBlocks());
 		return i.getBlockAt(i.getNumOfBlocks()-1);
 	}
 	

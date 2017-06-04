@@ -101,8 +101,8 @@ class BTree implements BTreeInterface
 		if (root!=null)
 		{
 			if (getRoot().getNumOfBlocks()==1 && !getRoot().isLeaf() &&
-			    getRoot().getChildAt(0).getNumOfBlocks()==1 &&
-			    getRoot().getChildAt(1).getNumOfBlocks()==1)
+			    getRoot().getChildAt(0).getNumOfBlocks()==getT()-1 &&
+			    getRoot().getChildAt(1).getNumOfBlocks()==getT()-1)
 				if (getRoot().childHasNonMinimalRightSibling(0))
 				{
 					getRoot().mergeWithRightSibling(0);

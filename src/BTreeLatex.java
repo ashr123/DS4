@@ -33,7 +33,7 @@ public class BTreeLatex
 	{
 		if (solvedLastBug())
 		{
-			autoTest(20, 50, 50);
+			autoTest(30, 80, 100);
 		}
 		else
 		{
