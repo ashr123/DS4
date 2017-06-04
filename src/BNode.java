@@ -260,7 +260,7 @@ class BNode implements BNodeInterface
 				}
 		if (/*i<=getNumOfBlocks() && */!isLeaf())
 		{
-			boolean isNotMerged=childHasNonMinimalLeftSibling(i) || childHasNonMinimalRightSibling(i);
+			boolean isNotMerged=!((getChildAt(i).getNumOfBlocks()<getT())&&(childHasNonMinimalLeftSibling(i) || childHasNonMinimalRightSibling(i)));
 			shiftOrMergeChildIfNeeded(i);
 			getChildAt(isNotMerged ? i : i-1).delete(key);
 		}
