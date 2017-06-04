@@ -13,7 +13,6 @@ class BTree implements BTreeInterface
 	public BTree(int t)
 	{
 		this.t=t;
-		//root=null;
 	}
 	
 	// For testing purposes.
@@ -89,10 +88,8 @@ class BTree implements BTreeInterface
 		{
 			root=new BNode(getT(), getRoot());//Lines 3-7
 			getRoot().splitChild(0);//Line 8
-			getRoot().insertNonFull(b);//Line 9
 		}
-		else//Line 10
-			getRoot().insertNonFull(b);//Line 11
+		getRoot().insertNonFull(b);//Line 9-11
 	}
 	
 	@Override
@@ -103,40 +100,19 @@ class BTree implements BTreeInterface
 			if (getRoot().getNumOfBlocks()==1 && !getRoot().isLeaf() &&
 			    getRoot().getChildAt(0).getNumOfBlocks()==getT()-1 &&
 			    getRoot().getChildAt(1).getNumOfBlocks()==getT()-1)
-				if (getRoot().childHasNonMinimalRightSibling(0))
-				{
-					getRoot().mergeWithRightSibling(0);
-					root=getRoot().getChildAt(0);
-				}
-				else
-				{
-					getRoot().mergeWithRightSibling(0);
-					root=getRoot().getChildAt(0);
-				}
+			{
+				getRoot().mergeWithRightSibling(0);
+				root=getRoot().getChildAt(0);
+			}
 			root.delete(key);
-//			if (getRoot().getNumOfBlocks()==0)
-//				return;
-//			int last=getRoot().getBlockKeyAt(getRoot().getNumOfBlocks()-1);
-//			if (getRoot().getNumOfBlocks()>=2*getT()-1)
-//			{
-//				Block block=getRoot().getBlockAt(getRoot().getNumOfBlocks()-1);
-//				root=new BNode(getT(), getRoot());
-//				getRoot().splitChild(0);
-//				if (key!=last && getRoot().getChildAt(1).getBlockKeyAt(getRoot().getChildAt(1).getNumOfBlocks()-1)!=last)
-//				{
-//					getRoot().getChildAt(1).getBlocksList().add(block);
-//					getRoot().getChildAt(1).setNumOfBlocks(getRoot().getChildAt(1)
-//					                                                .getNumOfBlocks()+1);
-//				}
-//			}
 		}
 	}
 	
 	@Override
 	public MerkleBNode createMBT()
 	{
-		if(root!=null)
-			return root.createHashNode();
+		if(getRoot()!=null)
+			return getRoot().createHashNode();
 		return null;
 	}
 }
