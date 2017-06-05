@@ -102,7 +102,7 @@ class BNode implements BNodeInterface
 	@Override
 	public int getBlockKeyAt(int indx)
 	{
-		return blocksList.get(indx).getKey();
+		return getBlockAt(indx).getKey();
 	}
 	
 	@Override
@@ -187,12 +187,12 @@ class BNode implements BNodeInterface
 	}
 	
 	@Override
-	public void insertNonFull(Block d)
+	public void insertNonFull(Block b)
 	{
 		int i=getNumOfBlocks()-1;//Line 1
 		if (isLeaf())//Line 2
 		{
-			while (i>=0 && d.getKey()<getBlockKeyAt(i))//Line 3
+			while (i>=0 && b.getKey()<getBlockKeyAt(i))//Line 3
 			{
 				if (i==getNumOfBlocks()-1)
 					getBlocksList().add(getBlockAt(getNumOfBlocks()-1));//Line 4
@@ -201,23 +201,23 @@ class BNode implements BNodeInterface
 				i--;//Line 5
 			}
 			if (i==getNumOfBlocks()-1)
-				getBlocksList().add(i+1, d);//Line 6
+				getBlocksList().add(i+1, b);//Line 6
 			else
-				getBlocksList().set(i+1, d);//Line 6
+				getBlocksList().set(i+1, b);//Line 6
 			numOfBlocks++;//Line 7
 		}
 		else//Line 9
 		{
-			while (i>=0 && d.getKey()<getBlockKeyAt(i))//Line 10
+			while (i>=0 && b.getKey()<getBlockKeyAt(i))//Line 10
 				i--;//Line 11
 			i++;//Line 12
 			if (getChildAt(i).getNumOfBlocks()==2*getT()-1)//Line 14
 			{
 				splitChild(i);//Line 15
-				if (d.getKey()>getBlockKeyAt(i))//Without a line number
+				if (b.getKey()>getBlockKeyAt(i))//Without a line number
 					i++;//Line 16
 			}
-			getChildAt(i).insertNonFull(d);//Line 17
+			getChildAt(i).insertNonFull(b);//Line 17
 		}
 	}
 	
@@ -225,8 +225,8 @@ class BNode implements BNodeInterface
 	public void delete(int key)
 	{
 		int i=0;
-		for (; i<getNumOfBlocks() && getBlockAt(i).getKey()<=key; i++)
-			if (getBlockAt(i).getKey()==key)
+		for (; i<getNumOfBlocks() && getBlockKeyAt(i)<=key; i++)
+			if (getBlockKeyAt(i)==key)
 				if (isLeaf())//Case 1
 				{
 					getBlocksList().remove(i);

@@ -31,13 +31,13 @@ public class BTreeLatex
 	
 	public static void main(String args[])
 	{
-		if (solvedLastBug())
+		if (!solvedLastBug())
 		{
-			autoTest(30, 80, 100);
+			StartLastFailedTest();
 		}
 		else
 		{
-			StartLastFailedTest();
+			autoTest(30, 80, 100);
 		}
 		
 		//manualTest();
@@ -71,9 +71,9 @@ public class BTreeLatex
 		return result;
 	}
 	
-	public static void autoTest(int maxT, int maxNodes, int maxTests)
+	private static void autoTest(int maxT, int maxNodes, int maxTests)
 	{
-		BTree testTree=null;
+		BTree testTree;
 		BTreeLatex autoTesto=null;
 		boolean flag=true;
 		for (int t=2; t<=maxT & flag; t++)
@@ -121,7 +121,7 @@ public class BTreeLatex
 		return result;
 	}
 	
-	public BTreeLatex(BTree tree, String filename)
+	private BTreeLatex(BTree tree, String filename)
 	{
 		commandsBuffer=new StringBuilder();
 		deletions=new Integer[0];
@@ -207,16 +207,14 @@ public class BTreeLatex
 	{
 		Integer[] arr=new Integer[bound];
 		for (int i=0; i<bound; i++)
-		{
 			arr[i]=i+1;
-		}
 		List<Integer> list=Arrays.asList(arr);
 		Collections.shuffle(list);
 		arr=(Integer[])list.toArray();
 		return arr;
 	}
 	
-	public boolean testSearch(int bound)
+	private boolean testSearch(int bound)
 	{
 		boolean result=true;
 		try
@@ -247,7 +245,7 @@ public class BTreeLatex
 		return result;
 	}
 	
-	public boolean initSimpleTree(int bound)
+	private boolean initSimpleTree(int bound)
 	{
 		boolean result=true;
 		try
@@ -285,14 +283,11 @@ public class BTreeLatex
 		return result;
 	}
 	
-	public void finish()
+	private void finish()
 	{
 		try (PrintWriter writer=new PrintWriter(new BufferedWriter(new FileWriter(readableFile))))
 		{
-			writer.println(statesHolder+"\\end{tabular}\n"
-			               +"\n"
-			               +"\\end{document}");
-			
+			writer.println(statesHolder+"\\end{tabular}\n"+"\n"+"\\end{document}");
 		}
 		catch (Exception e)
 		{
@@ -300,7 +295,7 @@ public class BTreeLatex
 		}
 	}
 	
-	public boolean addTreeState(String stateName)
+	private boolean addTreeState(String stateName)
 	{
 		height=-1;
 		buffer.setLength(0);
@@ -325,13 +320,9 @@ public class BTreeLatex
 		totalBlocks+=node.getBlocksList().size();
 		int currentKey=Integer.MIN_VALUE;
 		if (node.getBlocksList().size()>0)
-		{
 			currentKey=node.getBlockAt(0).getKey();
-		}
 		else
-		{
 			result=false;
-		}
 		
 		String misplaced="";
 		if (currentKey>max | currentKey<min)
@@ -342,13 +333,9 @@ public class BTreeLatex
 		buffer.append("[\\begin{tabular}{@{}c@{}} \\ {\\begin{tabular}{|*{")
 		      .append(Math.max(1, node.getBlocksList().size())).append("}{c|}} \\hline ");
 		if (node.getBlocksList().isEmpty())
-		{
 			buffer.append("\\cellcolor{red!25}");
-		}
 		else
-		{
 			buffer.append(currentKey).append(" ").append(misplaced);
-		}
 		int localMin="".equals(misplaced) ? currentKey : min;
 		misplaced="";
 		for (int i=1; i<node.getBlocksList().size(); i++)
@@ -360,7 +347,7 @@ public class BTreeLatex
 				result=false;
 			}
 			buffer.append("& ").append(misplaced).append(node.getBlockAt(i).getKey()).append(" ");
-			localMin="".equals(misplaced) ? currentKey : localMin;
+			localMin=misplaced!=null && misplaced.isEmpty() ? currentKey : localMin;
 			misplaced="";
 		}
 		
@@ -406,17 +393,13 @@ public class BTreeLatex
 			result=false;
 		}
 		if (node.isLeaf())
-		{
 			if (height!=-1 & height!=currentHeight)
 			{
 				error+="\\\\ \\colorbox{red!50}{height of leaf differs}";
 				result=false;
 			}
 			else
-			{
 				height=currentHeight;
-			}
-		}
 		
 		buffer.append("\\\\ \\hline \\end{tabular}} ").append(dataOfNode(node)).append(error).append(" \\end{tabular}");
 		if (!node.isLeaf())
@@ -424,8 +407,8 @@ public class BTreeLatex
 			for (int i=0; i<node.getChildrenList().size(); i++)
 			{
 				int keyBefore=(node.getBlocksList().size()>=i & i>0) ? node.getBlockKeyAt(i-1) : min;
-				int keyAfter=(node.getBlocksList().size()>0 & i<node.getBlocksList().size()) ? node.getBlockKeyAt(
-						i) : max;
+				int keyAfter=(node.getBlocksList().size()>0 & i<node.getBlocksList().size()) ?
+				             node.getBlockKeyAt(i) : max;
 				result=result & createNodes(node.getChildAt(i), keyBefore, keyAfter, false, currentHeight+1);
 			}
 		}
@@ -434,12 +417,12 @@ public class BTreeLatex
 		return result;
 	}
 	
-	public void clearBuffer()
+	private void clearBuffer()
 	{
 		longTermBuffer.setLength(0);
 	}
 	
-	public void commitBufferedStates()
+	private void commitBufferedStates()
 	{
 		statesHolder.append(longTermBuffer);
 	}
@@ -468,20 +451,14 @@ public class BTreeLatex
 			ObjectOutputStream out=new ObjectOutputStream(fileOut);
 			out.writeInt(tree.getT());
 			out.writeInt(insertions.length);
-			for (int i=0; i<insertions.length; i++)
-			{
-				out.writeInt(insertions[i]);
-			}
+			for (Integer insertion : insertions)
+				out.writeInt(insertion);
 			out.writeInt(searchs.length);
-			for (int i=0; i<searchs.length; i++)
-			{
-				out.writeInt(searchs[i]);
-			}
+			for (Integer search : searchs)
+				out.writeInt(search);
 			out.writeInt(deletions.length);
-			for (int i=0; i<deletions.length; i++)
-			{
-				out.writeInt(deletions[i]);
-			}
+			for (Integer deletion : deletions)
+				out.writeInt(deletion);
 			out.close();
 			System.out.println("Saved last failed test");
 		}
@@ -499,21 +476,15 @@ public class BTreeLatex
 			tree=new BTree(in.readInt());
 			insertions=new Integer[in.readInt()];
 			for (int i=0; i<insertions.length; i++)
-			{
 				insertions[i]=in.readInt();
-			}
 			
 			searchs=new Integer[in.readInt()];
 			for (int i=0; i<searchs.length; i++)
-			{
 				searchs[i]=in.readInt();
-			}
 			
 			deletions=new Integer[in.readInt()];
 			for (int i=0; i<deletions.length; i++)
-			{
 				deletions[i]=in.readInt();
-			}
 			in.close();
 			fileIn.close();
 			System.out.println("Loaded last failed test");
@@ -598,7 +569,7 @@ public class BTreeLatex
 		return result;
 	}
 	
-	public static void StartLastFailedTest()
+	private static void StartLastFailedTest()
 	{
 		BTreeLatex latx=new BTreeLatex(null, "BTreeInLatex");
 		latx.loadLastFailedTest();

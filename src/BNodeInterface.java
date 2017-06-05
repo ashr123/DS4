@@ -47,7 +47,7 @@ public interface BNodeInterface
 	 * Assuming this node is not full.
 	 * @param b the new block.
 	 */
-	void insertNonFull(Block d);
+	void insertNonFull(Block b);
 	
 	/**
 	 * Delete a block by its key, in the subtree rooted by this node.
