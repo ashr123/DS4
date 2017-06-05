@@ -23,16 +23,10 @@ class HashUtils
 			e.printStackTrace();
 		}
 		if (crypt != null)
-		{
 			crypt.reset();
-		}
 		for (byte[] data : dataList)
-		{
-			if (crypt != null)
-			{
+			if (crypt!=null)
 				crypt.update(data);
-			}
-		}
 		return crypt!=null ? crypt.digest() : new byte[0];
 	}
 }
