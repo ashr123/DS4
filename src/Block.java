@@ -10,7 +10,7 @@ import java.util.Arrays;
  */
 class Block
 {
-	static final int BLOCK_SIZE=200;
+	private static final int BLOCK_SIZE=200;
 	
 	private int key;
 	private byte[] data;
