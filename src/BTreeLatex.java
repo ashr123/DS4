@@ -3,18 +3,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- * @author evyatar
+ * @author Evyatar
  */
-public class BTreeLatex
+class BTreeLatex
 {
-	
 	private static final File DESKTOP=new File(System.getProperty("user.home"), "Desktop");
 	private static final File DIR=new File(DESKTOP, "\\BTreeLatex");
 	private StringBuilder statesHolder;
@@ -29,23 +22,48 @@ public class BTreeLatex
 	private int totalBlocks;
 	private int height;
 	
+	private BTreeLatex(BTree tree, String filename)
+	{
+		commandsBuffer=new StringBuilder();
+		deletions=new Integer[0];
+		insertions=new Integer[0];
+		searchs=new Integer[0];
+		statesHolder=new StringBuilder();
+		buffer=new StringBuilder();
+		longTermBuffer=new StringBuilder();
+		this.tree=tree;
+		readableFile=new File(DIR.getAbsolutePath()+"\\"+filename+".txt");
+		try
+		{
+			DIR.mkdir();
+			readableFile.createNewFile();
+			statesHolder.append("\\documentclass{standalone}\n"
+			                    +" \\usepackage{forest}\n"
+			                    +" \\usepackage{xcolor,colortbl}"
+			                    +"\n"
+			                    +"\\begin{document}\n"
+			                    +"\n"
+			                    +"\\begin{tabular}{@{}c@{}}\n"
+			                    +"\\\\");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String args[])
 	{
-		if (!solvedLastBug())
-		{
-			StartLastFailedTest();
-		}
-		else
-		{
+		if (solvedLastBug())
 			autoTest(30, 80, 100);
-		}
+		else
+			StartLastFailedTest();
 		
 		//manualTest();
 	}
 	
-	public static boolean manualTest()
+	private static boolean manualTest()
 	{
-		
 		boolean result=true;
 
         /*
@@ -80,14 +98,12 @@ public class BTreeLatex
 		{
 			System.out.println("Testing trees with t = "+t);
 			for (int i=1; i<=maxNodes & flag; i++)
-			{
 				for (int j=0; j<maxTests; j++)
 				{
 					testTree=new BTree(t);
 					autoTesto=new BTreeLatex(testTree, "BTreeInLatex");
 					flag=autoTesto.startTests(i);
 				}
-			}
 		}
 		if (flag)
 		{
@@ -101,11 +117,54 @@ public class BTreeLatex
 		}
 	}
 	
+	private static Integer[] arrScrambler(int bound)
+	{
+		Integer[] arr=new Integer[bound];
+		for (int i=0; i<bound; i++)
+			arr[i]=i+1;
+		List<Integer> list=Arrays.asList(arr);
+		Collections.shuffle(list);
+		arr=(Integer[])list.toArray();
+		return arr;
+	}
+	
+	private static boolean solvedLastBug()
+	{
+		return !new File(DIR.getAbsolutePath()+"\\lastFailedTest.evya").exists();
+	}
+	
+	private static String dataOfNode(BNode node)
+	{
+		String result="";
+		result+="\\\\  \\footnotesize{numOfBlocks: "+node.getNumOfBlocks()+"} "
+		        +"\\\\ \\footnotesize{blocks: "+node.getBlocksList().size()+"} "
+		        +"\\\\  \\footnotesize{children: "+node.getChildrenList().size()+"} "
+		        +" \\\\ \\footnotesize{isLeaf: "+node.isLeaf()+"} ";
+		return result;
+	}
+	
+	private static void StartLastFailedTest()
+	{
+		BTreeLatex latx=new BTreeLatex(null, "BTreeInLatex");
+		latx.loadLastFailedTest();
+		if (latx.useInsertions() & latx.useSearchs() & latx.useDeletions())
+		{
+			System.out.println("Succeeded the saved test! \n Starting auto tests again.");
+			new File(DIR.getAbsolutePath()+"\\lastFailedTest.evya").delete();
+			BTreeLatex.main(null);
+		}
+		else
+		{
+			latx.commitBufferedStates();
+			latx.finish();
+			System.out.println("Failed saved test");
+		}
+	}
+	
 	private boolean startTests(int i)
 	{
 		boolean result=this.initSimpleTree(i) && this.testSearch(i) && this.testDelete(i);
 		if (!result)
-		{
 			try
 			{
 				PrintWriter writer=new PrintWriter(new BufferedWriter(new FileWriter(new File(DIR.getAbsolutePath()+
@@ -117,38 +176,7 @@ public class BTreeLatex
 			{
 				e.printStackTrace();
 			}
-		}
 		return result;
-	}
-	
-	private BTreeLatex(BTree tree, String filename)
-	{
-		commandsBuffer=new StringBuilder();
-		deletions=new Integer[0];
-		insertions=new Integer[0];
-		searchs=new Integer[0];
-		statesHolder=new StringBuilder();
-		buffer=new StringBuilder();
-		longTermBuffer=new StringBuilder();
-		this.tree=tree;
-		readableFile=new File(DIR.getAbsolutePath()+"\\"+filename+".txt");
-		try
-		{
-			DIR.mkdir();
-			readableFile.createNewFile();
-			statesHolder.append("\\documentclass{standalone}\n"
-			                    +" \\usepackage{forest}\n"
-			                    +" \\usepackage{xcolor,colortbl}"
-			                    +"\n"
-			                    +"\\begin{document}\n"
-			                    +"\n"
-			                    +"\\begin{tabular}{@{}c@{}}\n"
-			                    +"\\\\");
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
 	}
 	
 	private boolean testDelete(int bound)
@@ -201,17 +229,6 @@ public class BTreeLatex
 			return false;
 		}
 		//return true;
-	}
-	
-	private static Integer[] arrScrambler(int bound)
-	{
-		Integer[] arr=new Integer[bound];
-		for (int i=0; i<bound; i++)
-			arr[i]=i+1;
-		List<Integer> list=Arrays.asList(arr);
-		Collections.shuffle(list);
-		arr=(Integer[])list.toArray();
-		return arr;
 	}
 	
 	private boolean testSearch(int bound)
@@ -427,21 +444,6 @@ public class BTreeLatex
 		statesHolder.append(longTermBuffer);
 	}
 	
-	private static boolean solvedLastBug()
-	{
-		return !new File(DIR.getAbsolutePath()+"\\lastFailedTest.evya").exists();
-	}
-	
-	private static String dataOfNode(BNode node)
-	{
-		String result="";
-		result+="\\\\  \\footnotesize{numOfBlocks: "+node.getNumOfBlocks()+"} "
-		        +"\\\\ \\footnotesize{blocks: "+node.getBlocksList().size()+"} "
-		        +"\\\\  \\footnotesize{children: "+node.getChildrenList().size()+"} "
-		        +" \\\\ \\footnotesize{isLeaf: "+node.isLeaf()+"} ";
-		return result;
-	}
-	
 	private void saveLastTest()
 	{
 		File file=new File(DIR.getAbsolutePath()+"\\lastFailedTest.evya");
@@ -547,7 +549,8 @@ public class BTreeLatex
 			if (totalBlocks!=(deletions.length-(i+1)) & result)
 			{
 				System.out.println(
-						"Total blocks in tree is "+totalBlocks+" and supposed to be "+(deletions.length-(i+1)));
+						"Total blocks in tree is "+totalBlocks+" and supposed to be "+
+						(deletions.length-(i+1)));
 				result=false;
 			}
 		}
@@ -567,23 +570,5 @@ public class BTreeLatex
 		}
 		
 		return result;
-	}
-	
-	private static void StartLastFailedTest()
-	{
-		BTreeLatex latx=new BTreeLatex(null, "BTreeInLatex");
-		latx.loadLastFailedTest();
-		if (latx.useInsertions() & latx.useSearchs() & latx.useDeletions())
-		{
-			System.out.println("Succeeded the saved test! \n Starting auto tests again.");
-			new File(DIR.getAbsolutePath()+"\\lastFailedTest.evya").delete();
-			BTreeLatex.main(null);
-		}
-		else
-		{
-			latx.commitBufferedStates();
-			latx.finish();
-			System.out.println("Failed saved test");
-		}
 	}
 }
