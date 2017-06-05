@@ -39,8 +39,8 @@ class BTree implements BTreeInterface
 	{
 		final int prime=31;
 		int result=1;
-		result=prime*result+(root==null ? 0 : root.hashCode());
-		result=prime*result+t;
+		result=prime*result+(getRoot()==null ? 0 : getRoot().hashCode());
+		result=prime*result+getT();
 		return result;
 	}
 	
@@ -49,20 +49,14 @@ class BTree implements BTreeInterface
 	{
 		if (this==obj)
 			return true;
-		if (obj==null)
+		if (obj==null || getClass()!=obj.getClass())
 			return false;
-		if (getClass()!=obj.getClass())
+		if (getRoot()==null && ((BTree)obj).getRoot()!=null)
 			return false;
-		BTree other=(BTree)obj;
-		if (root==null)
-		{
-			if (other.root!=null)
-				return false;
-		}
 		else
-			if (!root.equals(other.root))
+			if (!getRoot().equals(((BTree)obj).getRoot()))
 				return false;
-		return t==other.t;
+		return getT()==((BTree)obj).getT();
 	}
 	// ///////////////////DO NOT CHANGE END///////////////////
 	// ///////////////////DO NOT CHANGE END///////////////////
@@ -84,7 +78,7 @@ class BTree implements BTreeInterface
 			root=new BNode(getT(), b);
 			return;
 		}
-		if (getRoot().getNumOfBlocks()==2*getT()-1)//Line 2
+		if (getRoot().isFull())//Line 2
 		{
 			root=new BNode(getT(), getRoot());//Lines 3-7
 			getRoot().splitChild(0);//Line 8
@@ -98,8 +92,8 @@ class BTree implements BTreeInterface
 		if (root!=null)
 		{
 			if (getRoot().getNumOfBlocks()==1 && !getRoot().isLeaf() &&
-			    getRoot().getChildAt(0).getNumOfBlocks()==getT()-1 &&
-			    getRoot().getChildAt(1).getNumOfBlocks()==getT()-1)
+			    getRoot().getChildAt(0).isMinSize() &&
+			    getRoot().getChildAt(1).isMinSize())
 			{
 				getRoot().mergeWithRightSibling(0);
 				root=getRoot().getChildAt(0);

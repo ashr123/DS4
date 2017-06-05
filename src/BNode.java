@@ -84,19 +84,19 @@ class BNode implements BNodeInterface
 	@Override
 	public boolean isFull()
 	{
-		return numOfBlocks==2*t-1;
+		return getNumOfBlocks()==2*getT()-1;
 	}
 	
 	@Override
 	public boolean isMinSize()
 	{
-		return numOfBlocks==t-1;
+		return getNumOfBlocks()==getT()-1;
 	}
 	
 	@Override
 	public boolean isEmpty()
 	{
-		return numOfBlocks==0;
+		return getNumOfBlocks()==0;
 	}
 	
 	@Override
@@ -108,13 +108,13 @@ class BNode implements BNodeInterface
 	@Override
 	public Block getBlockAt(int indx)
 	{
-		return blocksList.get(indx);
+		return getBlocksList().get(indx);
 	}
 	
 	@Override
 	public BNode getChildAt(int indx)
 	{
-		return childrenList.get(indx);
+		return getChildrenList().get(indx);
 	}
 	
 	@Override
@@ -122,11 +122,11 @@ class BNode implements BNodeInterface
 	{
 		final int prime=31;
 		int result=1;
-		result=prime*result+(blocksList==null ? 0 : blocksList.hashCode());
-		result=prime*result+(childrenList==null ? 0 : childrenList.hashCode());
-		result=prime*result+(isLeaf ? 1231 : 1237);
-		result=prime*result+numOfBlocks;
-		result=prime*result+t;
+		result=prime*result+(getBlocksList()==null ? 0 : getBlocksList().hashCode());
+		result=prime*result+(getChildrenList()==null ? 0 : getBlocksList().hashCode());
+		result=prime*result+(isLeaf() ? 1231 : 1237);
+		result=prime*result+getNumOfBlocks();
+		result=prime*result+getT();
 		return result;
 	}
 	
@@ -135,36 +135,28 @@ class BNode implements BNodeInterface
 	{
 		if (this==obj)
 			return true;
-		if (obj==null)
+		if (obj==null || getClass()!=obj.getClass())
 			return false;
-		if (getClass()!=obj.getClass())
+		if (getBlocksList()==null && ((BNode)obj).getBlocksList()!=null)
 			return false;
-		BNode other=(BNode)obj;
-		if (blocksList==null)
-		{
-			if (other.blocksList!=null)
-				return false;
-		}
 		else
-			if (!blocksList.equals(other.blocksList))
+			if (getBlocksList()!=null && !getBlocksList().equals(((BNode)obj).getBlocksList()))
 				return false;
-		if (childrenList==null)
-		{
-			if (other.childrenList!=null)
-				return false;
-		}
+		if (getChildrenList()==null && ((BNode)obj).getChildrenList()!=null)
+			return false;
 		else
-			if (!childrenList.equals(other.childrenList))
+			if (getChildrenList()!=null && !getChildrenList().equals(((BNode)obj).getChildrenList()))
 				return false;
-		return isLeaf==other.isLeaf && numOfBlocks==other.numOfBlocks && t==other.t;
+		return isLeaf()==((BNode)obj).isLeaf() && getNumOfBlocks()==((BNode)obj).getNumOfBlocks() &&
+		       getT()==((BNode)obj).getT();
 	}
 	
 	@SuppressWarnings("SingleCharacterStringConcatenation")
 	@Override
 	public String toString()
 	{
-		return "BNode [t="+t+", numOfBlocks="+numOfBlocks+", isLeaf="+isLeaf+", blocksList="+blocksList
-		       +", childrenList="+childrenList+"]";
+		return "BNode [t="+getT()+", numOfBlocks="+getNumOfBlocks()+", isLeaf="+isLeaf()+
+		       ", blocksList="+getBlocksList()+", childrenList="+getChildrenList()+"]";
 	}
 	// ///////////////////DO NOT CHANGE END///////////////////
 	// ///////////////////DO NOT CHANGE END///////////////////
@@ -211,7 +203,7 @@ class BNode implements BNodeInterface
 			while (i>=0 && b.getKey()<getBlockKeyAt(i))//Line 10
 				i--;//Line 11
 			i++;//Line 12
-			if (getChildAt(i).getNumOfBlocks()==2*getT()-1)//Line 14
+			if (getChildAt(i).isFull())//Line 14
 			{
 				splitChild(i);//Line 15
 				if (b.getKey()>getBlockKeyAt(i))//Without a line number
@@ -235,23 +227,21 @@ class BNode implements BNodeInterface
 				}
 				else
 				{
-					if (getChildAt(i).getNumOfBlocks()>=getT())//Case 2
+					if (!getChildAt(i).isMinSize())//Case 2
 					{
 						Block predecessor=getChildAt(i).getMaxKeyBlock();
 						getChildAt(i).delete(predecessor.getKey());
 						getBlocksList().set(i, predecessor);
 						return;
 					}
-					if (getChildAt(i).getNumOfBlocks()==getT()-1 && getChildAt(i+1)
-							                                                .getNumOfBlocks()>=getT())//Case 3
+					if (getChildAt(i).isMinSize() && !getChildAt(i+1).isMinSize())//Case 3
 					{
 						Block successor=getChildAt(i+1).getMinKeyBlock();
 						getChildAt(i+1).delete(successor.getKey());
 						getBlocksList().set(i, successor);
 						return;
 					}
-					if (getChildAt(i).getNumOfBlocks()==getT()-1 && getChildAt(i+1)
-							                                                .getNumOfBlocks()==getT()-1)//Case 4
+					if (getChildAt(i).isMinSize() && getChildAt(i+1).isMinSize())//Case 4
 					{
 						mergeWithRightSibling(i);
 						getChildAt(i).delete(key);
@@ -269,7 +259,7 @@ class BNode implements BNodeInterface
 		if (isLeaf())
 		{
 			hashInput=new ArrayList<>(getNumOfBlocks());
-			for (Block block : blocksList)
+			for (Block block : getBlocksList())
 				hashInput.add(block.getData());
 			return new MerkleBNode(HashUtils.sha1Hash(hashInput));
 		}
@@ -327,8 +317,8 @@ class BNode implements BNodeInterface
 	 */
 	private boolean childHasNonMinimalLeftSibling(int childIndx)
 	{
-		return childIndx>=1 && !isLeaf() && getChildAt(childIndx-1)!=null && getChildAt(childIndx-1)
-				                                                                     .getNumOfBlocks()>getT()-1;
+		return childIndx>=1 && !isLeaf() && getChildAt(childIndx-1)!=null && !getChildAt(childIndx-1)
+				                                                                     .isMinSize();
 	}
 	
 	/**
@@ -338,7 +328,7 @@ class BNode implements BNodeInterface
 	private boolean childHasNonMinimalRightSibling(int childIndx)
 	{
 		return childIndx+1<=getNumOfBlocks() && !isLeaf() && getChildAt(childIndx+1)!=null &&
-		       getChildAt(childIndx+1).getNumOfBlocks()>getT()-1;
+		       !getChildAt(childIndx+1).isMinSize();
 	}
 	
 	/**
@@ -348,7 +338,7 @@ class BNode implements BNodeInterface
 	 */
 	private boolean shiftOrMergeChildIfNeeded(int childIndx)
 	{
-		if (getChildAt(childIndx).getNumOfBlocks()<getT())
+		if (getChildAt(childIndx).isMinSize())
 		{
 			if (childHasNonMinimalLeftSibling(childIndx))
 			{
