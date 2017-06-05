@@ -62,20 +62,16 @@ public class Assignment4Tests
 	
 	private static void testCreateMBT()
 	{
-		ArrayList<byte[]> output=new ArrayList<>();
 		String s="abcdefghijklmnopqrstuvwxyz";
 		BTree tree=new BTree(3);
 		for (int i=0; i<s.length(); i++)
-		{
-			output.add(s.substring(i, i+1).getBytes());
 			tree.insert(new Block(i, s.substring(i, i+1).getBytes()));
-		}
 		MerkleBNode MBTRoot=tree.createMBT();
 		ArrayList<String> StringArray=getHashValues(MBTRoot, new ArrayList<String>());
 		String[] array=new String[StringArray.size()];
 		StringArray.toArray(array);
 		String expected="[[-38, 35, 97, 78, 2, 70, -102, 13, 124, 123, -47, -67, -85, 92, -100, 71, 75, 25, 4, -36], [96, 12, -51, 27, 113, 86, -110, 50, -48, 29, 17, 11, -58, 62, -112, 107, -22, -80, 77, -116], [16, 65, 23, -100, -67, -38, 54, 111, -41, -80, 52, 127, 9, 37, 95, 119, 81, 112, -31, 3], [-128, 34, -18, -114, -104, 1, -91, -87, 15, -117, -93, 119, -56, 106, 54, -39, 71, 57, 111, -33], [104, -90, 88, -76, 75, -70, -17, -85, 62, -11, -51, 35, 25, 103, 25, 95, -64, -1, -99, 105], [120, -36, 12, -45, -25, -17, 71, 93, 44, 62, 102, 64, 120, -27, -15, -41, -77, -73, 25, -85], [87, -5, -11, 86, 23, -106, -84, 63, 64, -41, -5, -8, -26, -74, 73, -19, 86, 56, 85, 46], [-101, 2, -39, -105, 76, 20, -26, 35, -55, -1, -66, -41, 54, 11, -22, -53, -16, -36, -71, 95], [125, 31, 19, 48, -18, 12, -1, 68, 34, 101, -88, 47, 38, -41, 21, -44, 19, 47, 94, 17], [-94, 14, -40, 51, 57, -85, 50, -118, -24, 23, -84, -53, 63, -123, -102, -23, -24, -7, 48, -7], [-61, 91, 53, 73, 3, -82, -76, -68, -76, 13, -68, 84, -30, -120, 89, 122, -104, 51, -127, -123]]";
-		Test(expected, Arrays.toString(array), "CreateMBT - Test 1 of 1");
+		Test(expected, Arrays.toString(array));
 	}
 	
 	private static void testDelete()
@@ -131,9 +127,7 @@ public class Assignment4Tests
 	{
 		ArrayList<Integer> expected=new ArrayList<>();
 		for (int i=1; i<size; i++)
-		{
 			expected.add(i);
-		}
 		return expected;
 	}
 	
@@ -142,28 +136,25 @@ public class Assignment4Tests
 		ArrayList<Block> SecondBlocks=Block.blockFactory(1, toKey);
 		Collections.shuffle(SecondBlocks);
 		for (Block block : SecondBlocks)
-		{
 			secondTree.insert(block);
-		}
 	}
 	
-	private static <T> void Test(T expected, T actual, String CallingMethod)
+	private static <T> void Test(T expected, T actual)
 	{
 		if (expected==null)
 		{
 			if (actual!=null)
 			{
-				System.err.println(CallingMethod+": was <"+actual+"> but should be <"+null+">");
+				System.err.println("CreateMBT - Test 1 of 1"+": was <"+actual+"> but should be <"+null+">");
 				return;
 			}
-			System.out.println(CallingMethod+"-Passed");
+			System.out.println("CreateMBT - Test 1 of 1"+"-Passed");
 			return;
 		}
 		if (!(actual.equals(expected)))
-		{
-			System.err.println(CallingMethod+": was <"+actual+"> but should be <"+expected+">");
-		}
-		else System.out.println(CallingMethod+"-Passed");
+			System.err.println("CreateMBT - Test 1 of 1"+": was <"+actual+"> but should be <"+expected+">");
+		else
+			System.out.println("CreateMBT - Test 1 of 1"+"-Passed");
 	}
 	
 	private static <T> void Test(T expected, T actual, String CallingMethod, String ErrorMessage)
@@ -179,22 +170,17 @@ public class Assignment4Tests
 			return;
 		}
 		if (!(actual.equals(expected)))
-		{
 			System.err.println(CallingMethod+" failed- "+ErrorMessage);
-		}
-		else System.out.println(CallingMethod+"-Passed");
+		else
+			System.out.println(CallingMethod+"-Passed");
 		
 	}
 	
-	public static ArrayList<Integer> inorder(ArrayList<Integer> arrayList, BNode node)
+	private static ArrayList<Integer> inorder(ArrayList<Integer> arrayList, BNode node)
 	{
 		if (node.isLeaf())
-		{
 			for (int i=0; i<node.getNumOfBlocks(); i++)
-			{
 				arrayList.add(node.getBlockKeyAt(i));
-			}
-		}
 		else
 		{
 			for (int i=0; i<node.getNumOfBlocks(); i++)
@@ -207,49 +193,43 @@ public class Assignment4Tests
 		return arrayList;
 	}
 	
-	public static boolean checkDegree(BTree tree, BNode node)
+	private static boolean checkDegree(BTree tree, BNode node)
 	{
 		if (node.isLeaf())
-			return (node.equals(tree.getRoot()) & node.getBlocksList().size()<(2*node.getT())) || DegreeRange(node);
+			return (node.equals(tree.getRoot()) && node.getBlocksList().size()<(2*node.getT())) || DegreeRange(node);
 		boolean validDegree=true;
 		for (int i=0; i<=node.getBlocksList().size(); i++)
-		{
-			validDegree=checkDegree(tree, node.getChildAt(i)) && (node.equals(tree.getRoot()) || DegreeRange(node));
-		}
+			validDegree=checkDegree(tree, node.getChildAt(i)) && (node.equals(tree.getRoot()) ||
+			                                                      DegreeRange(node));
 		return validDegree;
 	}
 	
-	public static boolean checkNumOfChildren(BTree tree, BNode node)
+	private static boolean checkNumOfChildren(BTree tree, BNode node)
 	{
 		if (node.isLeaf())
 			return true;
 		boolean validNumOfChildren=true;
 		for (int i=0; i<=node.getBlocksList().size(); i++)
-		{
 			validNumOfChildren=checkNumOfChildren(tree, node.getChildAt(i)) && (node.equals(tree.getRoot()) ||
 			                                                                    node.getChildrenList().size()==
 			                                                                    node.getBlocksList().size()+1);
-		}
 		return validNumOfChildren;
 	}
 	
 	private static boolean DegreeRange(BNode node)
 	{
-		return (node.getBlocksList().size()>=node.getT()-1) & ((node.getBlocksList().size())<=(2*(node.getT()))-1);
+		return (node.getBlocksList().size()>=node.getT()-1) &&
+		       ((node.getBlocksList().size())<=(2*(node.getT()))-1);
 	}
 	
 	private static ArrayList<String> getHashValues(MerkleBNode merkleBNode, ArrayList<String> arrayList)
 	{
 		if (merkleBNode.isLeaf())
-		{
 			arrayList.add(Arrays.toString(merkleBNode.getHashValue()));
-		}
 		else
 		{
 			for (int i=0; i<merkleBNode.getChildrenList().size(); i++)
-			{
 				getHashValues(merkleBNode.getChildrenList().get(i), arrayList);
-			}
 			arrayList.add(Arrays.toString(merkleBNode.getHashValue()));
 		}
 		return arrayList;

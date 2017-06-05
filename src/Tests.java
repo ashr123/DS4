@@ -19,7 +19,7 @@ class Tests
 			
 			mbt=tree.createMBT();
 			
-			ArrayList<byte[]> hashInput=new ArrayList<byte[]>();
+			ArrayList<byte[]> hashInput=new ArrayList<>();
 			hashInput.add(blocks.get(0).getData());
 			hashInput.add(blocks.get(1).getData());
 			hashInput.add(blocks.get(2).getData());

@@ -55,7 +55,7 @@ class BTreeLatex
 	public static void main(String args[])
 	{
 		if (solvedLastBug())
-			autoTest(30, 80, 100);
+			autoTest(30, 80, 200);
 		else
 			StartLastFailedTest();
 		
