@@ -9,8 +9,8 @@ class BNode implements BNodeInterface
 	private final int t;
 	private int numOfBlocks;
 	private boolean isLeaf;
-	private ArrayList<Block> blocksList;
-	private ArrayList<BNode> childrenList;
+	private ArrayList<Block> blocksList=new ArrayList<>();
+	private ArrayList<BNode> childrenList=new ArrayList<>();
 	
 	/**
 	 * Constructor for creating a node with a single child.<br>
@@ -19,7 +19,7 @@ class BNode implements BNodeInterface
 	BNode(int t, BNode firstChild)
 	{
 		this(t, false, 0);
-		childrenList.add(firstChild);
+		getChildrenList().add(firstChild);
 	}
 	
 	/**
@@ -28,7 +28,7 @@ class BNode implements BNodeInterface
 	BNode(int t, Block firstBlock)
 	{
 		this(t, true, 1);
-		blocksList.add(firstBlock);
+		getBlocksList().add(firstBlock);
 	}
 	
 	public BNode(int t, boolean isLeaf, int numOfBlocks)
@@ -36,8 +36,6 @@ class BNode implements BNodeInterface
 		this.t=t;
 		this.isLeaf=isLeaf;
 		this.numOfBlocks=numOfBlocks;
-		blocksList=new ArrayList<>();
-		childrenList=new ArrayList<>();
 	}
 	
 	// For testing purposes.
