@@ -10,12 +10,14 @@ class BTree implements BTreeInterface
 	/**
 	 * Construct an empty tree.
 	 */
+	@SuppressWarnings("WeakerAccess")
 	public BTree(int t)
 	{
 		this.t=t;
 	}
 	
 	// For testing purposes.
+	@SuppressWarnings("unused")
 	public BTree(int t, BNode root)
 	{
 		this(t);

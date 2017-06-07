@@ -31,6 +31,7 @@ class BNode implements BNodeInterface
 		getBlocksList().add(firstBlock);
 	}
 	
+	@SuppressWarnings("WeakerAccess")
 	public BNode(int t, boolean isLeaf, int numOfBlocks)
 	{
 		this.t=t;
@@ -39,6 +40,7 @@ class BNode implements BNodeInterface
 	}
 	
 	// For testing purposes.
+	@SuppressWarnings("unused")
 	public BNode(int t, int numOfBlocks, boolean isLeaf, ArrayList<Block> blocksList,
 	             ArrayList<BNode> childrenList)
 	{
@@ -369,11 +371,9 @@ class BNode implements BNodeInterface
 					                                               .remove(getChildAt(childIndx-1)
 							                                                       .getNumOfBlocks()));
 		
-		getBlocksList().set(childIndx-1, getChildAt(childIndx-1)
-				                                 .getBlockAt(getChildAt(childIndx-1)
-						                                             .getNumOfBlocks()-1));
-		getChildAt(childIndx-1).getBlocksList().remove(getChildAt(childIndx-1)
-				                                               .getNumOfBlocks()-1);
+		getBlocksList().set(childIndx-1, getChildAt(childIndx-1).getBlocksList()
+		                                                        .remove(getChildAt(childIndx-1)
+				                                                                .getNumOfBlocks()-1));
 		
 		getChildAt(childIndx-1).numOfBlocks--;
 	}
@@ -391,8 +391,7 @@ class BNode implements BNodeInterface
 			getChildAt(childIndx).getChildrenList().add(getChildAt(childIndx+1).getChildrenList()
 			                                                                   .remove(0));
 		
-		getBlocksList().set(childIndx, getChildAt(childIndx+1).getBlockAt(0));
-		getChildAt(childIndx+1).getBlocksList().remove(0);
+		getBlocksList().set(childIndx, getChildAt(childIndx+1).getBlocksList().remove(0));
 		
 		getChildAt(childIndx+1).numOfBlocks--;
 	}
@@ -403,7 +402,7 @@ class BNode implements BNodeInterface
 	 */
 	private void mergeChildWithSibling(int childIndx)
 	{
-		if (childIndx>=1 && !isLeaf() && getChildAt(childIndx-1)!=null)
+		if (childIndx>0)
 			mergeWithLeftSibling(childIndx);
 		else
 			mergeWithRightSibling(childIndx);
