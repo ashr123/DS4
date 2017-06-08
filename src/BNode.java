@@ -315,7 +315,7 @@ class BNode implements BNodeInterface
 	 */
 	private boolean childHasNonMinimalLeftSibling(int childIndx)
 	{
-		return childIndx>0 && !isLeaf() && !getChildAt(childIndx-1).isMinSize();
+		return childIndx>0 && !getChildAt(childIndx-1).isMinSize();
 	}
 	
 	/**
@@ -324,7 +324,7 @@ class BNode implements BNodeInterface
 	 */
 	private boolean childHasNonMinimalRightSibling(int childIndx)
 	{
-		return childIndx<getNumOfBlocks() && !isLeaf() && !getChildAt(childIndx+1).isMinSize();
+		return childIndx<getNumOfBlocks() && !getChildAt(childIndx+1).isMinSize();
 	}
 	
 	/**
@@ -436,8 +436,6 @@ class BNode implements BNodeInterface
 	 */
 	void mergeWithRightSibling(int childIndx)
 	{
-		if (isLeaf())
-			return;
 		getChildAt(childIndx+1).getBlocksList().add(0, getBlocksList().remove(childIndx));
 		
 		//Adds to the childIndxth+1 child the blocks of the childIndxth child
