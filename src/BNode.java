@@ -44,9 +44,7 @@ class BNode implements BNodeInterface
 	public BNode(int t, int numOfBlocks, boolean isLeaf, ArrayList<Block> blocksList,
 	             ArrayList<BNode> childrenList)
 	{
-		this.t=t;
-		this.numOfBlocks=numOfBlocks;
-		this.isLeaf=isLeaf;
+		this(t, isLeaf,  numOfBlocks);
 		this.blocksList=blocksList;
 		this.childrenList=childrenList;
 	}
@@ -317,8 +315,7 @@ class BNode implements BNodeInterface
 	 */
 	private boolean childHasNonMinimalLeftSibling(int childIndx)
 	{
-		return childIndx>=1 && !isLeaf() && getChildAt(childIndx-1)!=null && !getChildAt(childIndx-1)
-				                                                                     .isMinSize();
+		return childIndx>0 && !isLeaf() && !getChildAt(childIndx-1).isMinSize();
 	}
 	
 	/**
@@ -327,8 +324,7 @@ class BNode implements BNodeInterface
 	 */
 	private boolean childHasNonMinimalRightSibling(int childIndx)
 	{
-		return childIndx+1<=getNumOfBlocks() && !isLeaf() && getChildAt(childIndx+1)!=null &&
-		       !getChildAt(childIndx+1).isMinSize();
+		return childIndx<getNumOfBlocks() && !isLeaf() && !getChildAt(childIndx+1).isMinSize();
 	}
 	
 	/**
