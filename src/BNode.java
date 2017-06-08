@@ -406,7 +406,7 @@ class BNode implements BNodeInterface
 	
 	/**
 	 * Merges the child node at {@code childIndx} with its left sibling.<br>
-	 * The left sibling node is removed.
+	 * The right sibling node is removed.
 	 * @param childIndx the index to be merged with
 	 */
 	private void mergeWithLeftSibling(int childIndx)
@@ -431,7 +431,7 @@ class BNode implements BNodeInterface
 	
 	/**
 	 * Merges the child node at {@code childIndx} with its right sibling.<br>
-	 * The right sibling node is removed.
+	 * The left sibling node is removed.
 	 * @param childIndx the index to be merged with
 	 */
 	void mergeWithRightSibling(int childIndx)

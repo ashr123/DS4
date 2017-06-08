@@ -13,7 +13,7 @@ class MerkleBNode
 	private boolean isLeaf;
 	private ArrayList<MerkleBNode> childrenList;
 	
-	private MerkleBNode(byte[] hashValue, boolean isLeaf, ArrayList<MerkleBNode> childrenList)
+	MerkleBNode(byte[] hashValue, boolean isLeaf, ArrayList<MerkleBNode> childrenList)
 	{
 		this.hashValue=hashValue;
 		this.isLeaf=isLeaf;

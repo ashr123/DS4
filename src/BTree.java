@@ -17,7 +17,7 @@ class BTree implements BTreeInterface
 	}
 	
 	// For testing purposes.
-	@SuppressWarnings("unused")
+	@SuppressWarnings({"unused", "WeakerAccess"})
 	public BTree(int t, BNode root)
 	{
 		this(t);
@@ -91,24 +91,22 @@ class BTree implements BTreeInterface
 	@Override
 	public void delete(int key)
 	{
-		if (root!=null)
+		if (getRoot()==null)
+			return;
+		if (getRoot().getNumOfBlocks()==1 && !getRoot().isLeaf() && getRoot().getChildAt(0).isMinSize() &&
+		    getRoot().getChildAt(1).isMinSize())
 		{
-			if (getRoot().getNumOfBlocks()==1 && !getRoot().isLeaf() &&
-			    getRoot().getChildAt(0).isMinSize() &&
-			    getRoot().getChildAt(1).isMinSize())
-			{
-				getRoot().mergeWithRightSibling(0);
-				root=getRoot().getChildAt(0);
-			}
-			root.delete(key);
+			getRoot().mergeWithRightSibling(0);
+			root=getRoot().getChildAt(0);
 		}
+		getRoot().delete(key);
+		if (getRoot().isEmpty())
+			root=null;
 	}
 	
 	@Override
 	public MerkleBNode createMBT()
 	{
-		if(getRoot()!=null)
-			return getRoot().createHashNode();
-		return null;
+		return getRoot()!=null ? getRoot().createHashNode() : null;
 	}
 }

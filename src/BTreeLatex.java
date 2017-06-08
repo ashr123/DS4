@@ -206,8 +206,7 @@ class BTreeLatex
 				addTreeState("before deleting "+deletions[deletions.length-1]);
 				tree.delete(deletions[deletions.length-1]);
 				addTreeState("after deleting "+deletions[deletions.length-1]);
-				result=tree.getRoot()==null ||
-				       (tree.getRoot().getBlocksList().isEmpty() & tree.getRoot().getChildrenList().isEmpty());
+				result=tree.getRoot()==null;
 				if (totalBlocks!=0 & result)
 				{
 					System.out.println("Total blocks in tree is "+totalBlocks+" and supposed to be "+0);
@@ -560,8 +559,7 @@ class BTreeLatex
 			addTreeState("before deleting "+deletions[deletions.length-1]);
 			tree.delete(deletions[deletions.length-1]);
 			addTreeState("after deleting "+deletions[deletions.length-1]);
-			result=tree.getRoot()==null ||
-			       (tree.getRoot().getBlocksList().isEmpty() & tree.getRoot().getChildrenList().isEmpty());
+			result=tree.getRoot()==null;
 			if (totalBlocks!=0 & result)
 			{
 				System.out.println("Total blocks in tree is "+totalBlocks+" and supposed to be "+0);
