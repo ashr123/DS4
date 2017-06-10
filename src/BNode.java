@@ -180,35 +180,21 @@ class BNode implements BNodeInterface
 	public void insertNonFull(Block b)
 	{
 		int i=getNumOfBlocks()-1;//Line 1
+		while (i>=0 && b.getKey()<getBlockKeyAt(i))//Lines 3, 10
+			i--;//Lines 5, 11
 		if (isLeaf())//Line 2
 		{
-			while (i>=0 && b.getKey()<getBlockKeyAt(i))//Line 3
-			{
-				if (i==getNumOfBlocks()-1)
-					getBlocksList().add(getBlockAt(getNumOfBlocks()-1));//Line 4
-				else
-					getBlocksList().set(i+1, getBlockAt(i));//Line 4
-				i--;//Line 5
-			}
-			if (i==getNumOfBlocks()-1)
-				getBlocksList().add(i+1, b);//Line 6
-			else
-				getBlocksList().set(i+1, b);//Line 6
+			getBlocksList().add(i+1, b);//Lines 4, 6
 			numOfBlocks++;//Line 7
+			return;//Line 9
 		}
-		else//Line 9
+		if (getChildAt(++i).isFull())//Lines 12, 14
 		{
-			while (i>=0 && b.getKey()<getBlockKeyAt(i))//Line 10
-				i--;//Line 11
-			i++;//Line 12
-			if (getChildAt(i).isFull())//Line 14
-			{
-				splitChild(i);//Line 15
-				if (b.getKey()>getBlockKeyAt(i))//Without a line number
-					i++;//Line 16
-			}
-			getChildAt(i).insertNonFull(b);//Line 17
+			splitChild(i);//Line 15
+			if (b.getKey()>getBlockKeyAt(i))//Without a line number
+				i++;//Line 16
 		}
+		getChildAt(i).insertNonFull(b);//Line 17
 	}
 	
 	@Override
