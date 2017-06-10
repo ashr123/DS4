@@ -160,20 +160,24 @@ class BNode implements BNodeInterface
 	// ///////////////////DO NOT CHANGE END///////////////////
 	// ///////////////////DO NOT CHANGE END///////////////////
 	
-	@SuppressWarnings("TailRecursion")
+//	@SuppressWarnings("TailRecursion")
 	@Override
 	public Block search(int key)
 	{
-		int i=0;//Line 1
-		while (i<getNumOfBlocks() && key>getBlockKeyAt(i))//Line 2
-			i++;//Line 3
-		if (i<getNumOfBlocks() && key==getBlockKeyAt(i))//Line 4
-			return getBlockAt(i);//Line 5
-		else
-			if (isLeaf())//Line 6
-				return null;//Line 7
-			else//Line 8
-				return getChildAt(i).search(key);//Line 10
+		BNode other=this;
+		while (true)
+		{
+			int i=0;//Line 1
+			while (i<other.getNumOfBlocks() && key>other.getBlockKeyAt(i))//Line 2
+				i++;//Line 3
+			if (i<other.getNumOfBlocks() && key==other.getBlockKeyAt(i))//Line 4
+				return other.getBlockAt(i);//Line 5
+			else
+				if (other.isLeaf())//Line 6
+					return null;//Line 7
+				else//Line 8
+					other=other.getChildAt(i);//Line 10
+		}
 	}
 	
 	@Override
