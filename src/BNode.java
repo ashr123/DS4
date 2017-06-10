@@ -40,7 +40,7 @@ class BNode implements BNodeInterface
 	}
 	
 	// For testing purposes.
-	@SuppressWarnings("unused")
+	@SuppressWarnings({"unused", "WeakerAccess"})
 	public BNode(int t, int numOfBlocks, boolean isLeaf, ArrayList<Block> blocksList,
 	             ArrayList<BNode> childrenList)
 	{
