@@ -56,7 +56,7 @@ class BTree implements BTreeInterface
 		if (getRoot()==null && ((BTree)obj).getRoot()!=null)
 			return false;
 		else
-			if (!getRoot().equals(((BTree)obj).getRoot()))
+			if (getRoot()!=null && !getRoot().equals(((BTree)obj).getRoot()))
 				return false;
 		return getT()==((BTree)obj).getT();
 	}
